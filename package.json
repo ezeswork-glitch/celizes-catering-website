@@ -1,0 +1,11 @@
+{
+  "name": "celizes-catering-website",
+  "version": "1.0.0",
+  "description": "Celizes Catering Website with Square Payments",
+  "dependencies": {
+    "square": "^30.0.0"
+  },
+  "scripts": {
+    "start": "node server.js"
+  }
+}

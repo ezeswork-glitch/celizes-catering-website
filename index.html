@@ -4,6 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Celizes Catering - Taste of Africa | Thunder Bay, Ontario</title>
+	<script src="https://sandbox.web.squarecdn.com/v1/square.js"></script>
+
     <style>
         :root {
             --gold: #D4AF37;
@@ -882,6 +884,11 @@
                 <div class="cart-total" style="margin-bottom: 1rem;">
                     <h3>Total: <span class="total-amount">$<span id="checkoutTotal">0.00</span></span></h3>
                 </div>
+		<div class="form-group">
+    <label>Payment Information *</label>
+    <div id="card-container" style="border: 2px solid var(--gold); border-radius: 8px; padding: 1rem; background: var(--gray-light); min-height: 100px;"></div>
+</div>
+
                 <button type="submit" class="btn-primary" style="width: 100%; border: none;">Confirm Order</button>
                 <p style="text-align: center; margin-top: 1rem; color: var(--gray); font-size: 0.9rem;">
                     You'll receive a call/WhatsApp to confirm your order and payment method.
@@ -1022,6 +1029,48 @@
                 }
             });
         });
-    </script>
+    <script src="https://sandbox.web.squarecdn.com/v1/square.js"></script>
+
+const SQUARE_CONFIG = {
+    applicationId: 'sandbox-sq0idb-KezXQJrfyAI2P6nBboy35Q', // Replace with your Application ID
+    locationId: 'LB2MHQXEX74CP', // Replace with your Location ID (found in Square Dashboard)
+
+    // Use 'sandbox' for testing, 'production' for live payments
+    environment: 'sandbox' // Change to 'production' when ready to go live
+};
+
+// Initialize Square Payments
+async function initializeSquarePayments() {
+    if (!window.Square) {
+        throw new Error('Square.js failed to load properly');
+    }
+
+    const payments = window.Square.payments(
+        SQUARE_CONFIG.applicationId,
+        SQUARE_CONFIG.locationId
+    );
+
+    return payments;
+}
+
+// Create payment request
+async function createPayment(sourceId, amount) {
+    const response = await fetch('/api/process-payment', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+            sourceId: sourceId,
+            amount: amount,
+            currency: 'CAD'
+        }),
+    });
+
+    return await response.json();
+}
+
+
+</script>
 </body>
 </html>
