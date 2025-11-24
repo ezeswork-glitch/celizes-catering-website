@@ -1,0 +1,1378 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Portal v2 - Celizes Catering</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+    <style>
+        :root {
+            --gold: #D4AF37;
+            --gold-dark: #B8941F;
+            --gold-light: #F0D98E;
+            --black: #000000;
+            --white: #FFFFFF;
+            --gray: #E0E0E0;
+            --gray-light: #2A2A2A;
+            --gray-dark: #1A1A1A;
+            --green: #10B981;
+            --red: #EF4444;
+            --blue: #3B82F6;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: var(--black);
+            color: var(--white);
+        }
+
+        /* Login Screen */
+        .login-container {
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 2rem;
+            background: linear-gradient(135deg, var(--black) 0%, var(--gray-dark) 100%);
+        }
+
+        .login-box {
+            background: var(--gray-light);
+            padding: 3rem;
+            border-radius: 16px;
+            border: 2px solid var(--gold);
+            max-width: 420px;
+            width: 100%;
+            box-shadow: 0 20px 60px rgba(212, 175, 55, 0.3);
+        }
+
+        .login-box h1 {
+            color: var(--gold);
+            margin-bottom: 0.5rem;
+            text-align: center;
+            font-size: 2rem;
+        }
+
+        .login-box p {
+            text-align: center;
+            color: var(--gray);
+            margin-bottom: 2rem;
+        }
+
+        /* Admin Container */
+        .admin-container {
+            display: none;
+            min-height: 100vh;
+        }
+
+        .sidebar {
+            position: fixed;
+            left: 0;
+            top: 0;
+            width: 260px;
+            height: 100vh;
+            background: var(--gray-light);
+            border-right: 2px solid var(--gold);
+            padding: 2rem 0;
+            overflow-y: auto;
+        }
+
+        .logo {
+            padding: 0 2rem 2rem 2rem;
+            border-bottom: 1px solid rgba(212, 175, 55, 0.2);
+            margin-bottom: 2rem;
+        }
+
+        .logo h2 {
+            color: var(--gold);
+            font-size: 1.5rem;
+            margin-bottom: 0.25rem;
+        }
+
+        .logo p {
+            color: var(--gray);
+            font-size: 0.85rem;
+        }
+
+        .nav-item {
+            padding: 1rem 2rem;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            color: var(--white);
+            font-weight: 500;
+        }
+
+        .nav-item:hover {
+            background: rgba(212, 175, 55, 0.1);
+            border-left: 3px solid var(--gold);
+        }
+
+        .nav-item.active {
+            background: rgba(212, 175, 55, 0.2);
+            border-left: 3px solid var(--gold);
+            color: var(--gold);
+        }
+
+        .main-content {
+            margin-left: 260px;
+            padding: 2rem;
+            min-height: 100vh;
+        }
+
+        .header {
+            background: var(--gray-light);
+            padding: 1.5rem 2rem;
+            border-radius: 12px;
+            border: 2px solid var(--gold);
+            margin-bottom: 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .header h1 {
+            color: var(--gold);
+            font-size: 2rem;
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        /* Stats Cards */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .stat-card {
+            background: var(--gray-light);
+            padding: 2rem;
+            border-radius: 12px;
+            border: 2px solid var(--gold);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .stat-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: var(--gold);
+        }
+
+        .stat-card h3 {
+            color: var(--gray);
+            font-size: 0.875rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-card .value {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: var(--gold);
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-card .change {
+            font-size: 0.875rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .stat-card .change.positive {
+            color: var(--green);
+        }
+
+        .stat-card .change.negative {
+            color: var(--red);
+        }
+
+        /* Charts */
+        .chart-container {
+            background: var(--gray-light);
+            padding: 2rem;
+            border-radius: 12px;
+            border: 2px solid var(--gold);
+            margin-bottom: 2rem;
+        }
+
+        .chart-container h3 {
+            color: var(--gold);
+            margin-bottom: 1.5rem;
+            font-size: 1.25rem;
+        }
+
+        .chart-wrapper {
+            position: relative;
+            height: 300px;
+        }
+
+        /* Form Elements */
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: var(--gold);
+            font-weight: 600;
+            font-size: 0.875rem;
+            text-transform: uppercase;
+        }
+
+        .form-group input,
+        .form-group textarea,
+        .form-group select {
+            width: 100%;
+            padding: 0.875rem;
+            background: var(--black);
+            color: var(--white);
+            border: 2px solid var(--gold);
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: all 0.3s;
+        }
+
+        .form-group input:focus,
+        .form-group textarea:focus,
+        .form-group select:focus {
+            outline: none;
+            border-color: var(--gold-light);
+            box-shadow: 0 0 0 3px rgba(212, 175, 55, 0.1);
+        }
+
+        .form-group textarea {
+            min-height: 120px;
+            font-family: inherit;
+            resize: vertical;
+        }
+
+        /* Buttons */
+        .btn {
+            padding: 0.875rem 1.75rem;
+            background: var(--gold);
+            color: var(--black);
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 0.9375rem;
+            transition: all 0.3s;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .btn:hover {
+            background: var(--gold-dark);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(212, 175, 55, 0.4);
+        }
+
+        .btn-secondary {
+            background: var(--gray-dark);
+            color: var(--white);
+            border: 2px solid var(--gold);
+        }
+
+        .btn-secondary:hover {
+            background: var(--gray-light);
+        }
+
+        .btn-danger {
+            background: var(--red);
+            color: var(--white);
+        }
+
+        .btn-success {
+            background: var(--green);
+            color: var(--white);
+        }
+
+        /* Image Upload */
+        .image-upload {
+            border: 2px dashed var(--gold);
+            border-radius: 12px;
+            padding: 3rem;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s;
+            background: var(--black);
+        }
+
+        .image-upload:hover {
+            border-color: var(--gold-light);
+            background: var(--gray-dark);
+        }
+
+        .image-upload.dragging {
+            border-color: var(--green);
+            background: rgba(16, 185, 129, 0.1);
+        }
+
+        .image-preview {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+            gap: 1rem;
+            margin-top: 1.5rem;
+        }
+
+        .image-preview-item {
+            position: relative;
+            aspect-ratio: 1;
+            border-radius: 8px;
+            overflow: hidden;
+            border: 2px solid var(--gold);
+        }
+
+        .image-preview-item img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .image-preview-item .remove {
+            position: absolute;
+            top: 0.5rem;
+            right: 0.5rem;
+            background: var(--red);
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 28px;
+            height: 28px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* Menu Items */
+        .menu-items-grid {
+            display: grid;
+            gap: 1.5rem;
+        }
+
+        .menu-item-card {
+            background: var(--gray-light);
+            border-radius: 12px;
+            border: 2px solid var(--gold);
+            padding: 1.5rem;
+            display: grid;
+            grid-template-columns: 120px 1fr auto;
+            gap: 1.5rem;
+            align-items: start;
+        }
+
+        .menu-item-image {
+            width: 120px;
+            height: 120px;
+            border-radius: 8px;
+            background: var(--black);
+            border: 2px solid var(--gold);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
+
+        .menu-item-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .menu-item-details h4 {
+            color: var(--gold);
+            font-size: 1.25rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .menu-item-details .price {
+            color: var(--white);
+            font-size: 1.125rem;
+            font-weight: 600;
+            margin-bottom: 0.75rem;
+        }
+
+        .menu-item-details .category {
+            display: inline-block;
+            padding: 0.25rem 0.75rem;
+            background: rgba(212, 175, 55, 0.2);
+            border: 1px solid var(--gold);
+            border-radius: 20px;
+            font-size: 0.75rem;
+            color: var(--gold);
+            margin-bottom: 0.75rem;
+        }
+
+        .menu-item-details .description {
+            color: var(--gray);
+            font-size: 0.9375rem;
+            line-height: 1.5;
+        }
+
+        .menu-item-actions {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        /* Tables */
+        .data-table {
+            width: 100%;
+            background: var(--gray-light);
+            border-radius: 12px;
+            border: 2px solid var(--gold);
+            overflow: hidden;
+        }
+
+        .data-table table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .data-table th {
+            background: var(--black);
+            color: var(--gold);
+            padding: 1rem;
+            text-align: left;
+            font-weight: 600;
+            text-transform: uppercase;
+            font-size: 0.8125rem;
+        }
+
+        .data-table td {
+            padding: 1rem;
+            border-top: 1px solid rgba(212, 175, 55, 0.1);
+        }
+
+        .data-table tr:hover {
+            background: rgba(212, 175, 55, 0.05);
+        }
+
+        /* Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.8);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem;
+        }
+
+        .modal.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background: var(--gray-light);
+            border-radius: 16px;
+            border: 2px solid var(--gold);
+            padding: 2.5rem;
+            max-width: 600px;
+            width: 100%;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+        }
+
+        .modal-header h2 {
+            color: var(--gold);
+            font-size: 1.5rem;
+        }
+
+        .modal-close {
+            background: none;
+            border: none;
+            color: var(--white);
+            font-size: 2rem;
+            cursor: pointer;
+            line-height: 1;
+        }
+
+        /* Alerts */
+        .alert {
+            padding: 1rem 1.5rem;
+            border-radius: 8px;
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .alert-success {
+            background: rgba(16, 185, 129, 0.2);
+            border: 2px solid var(--green);
+            color: var(--green);
+        }
+
+        .alert-error {
+            background: rgba(239, 68, 68, 0.2);
+            border: 2px solid var(--red);
+            color: var(--red);
+        }
+
+        .alert-info {
+            background: rgba(59, 130, 246, 0.2);
+            border: 2px solid var(--blue);
+            color: var(--blue);
+        }
+
+        /* Mobile Responsive */
+        @media (max-width: 768px) {
+            .sidebar {
+                transform: translateX(-100%);
+                transition: transform 0.3s;
+                z-index: 100;
+            }
+
+            .sidebar.mobile-open {
+                transform: translateX(0);
+            }
+
+            .main-content {
+                margin-left: 0;
+            }
+
+            .menu-item-card {
+                grid-template-columns: 1fr;
+            }
+
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Loading Spinner */
+        .spinner {
+            border: 3px solid rgba(212, 175, 55, 0.2);
+            border-top: 3px solid var(--gold);
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 2rem auto;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+    <!-- Login Screen -->
+    <div id="loginContainer" class="login-container">
+        <div class="login-box">
+            <h1>🔐 Admin Portal</h1>
+            <p>Celizes Catering Management System</p>
+            <div class="form-group">
+                <label>Username</label>
+                <input type="text" id="username" placeholder="Enter username">
+            </div>
+            <div class="form-group">
+                <label>Password</label>
+                <input type="password" id="password" placeholder="Enter password">
+            </div>
+            <button class="btn" onclick="login()" style="width: 100%;">Login</button>
+            <div id="loginError" style="margin-top: 1rem; color: var(--red); text-align: center;"></div>
+        </div>
+    </div>
+
+    <!-- Admin Dashboard -->
+    <div id="adminContainer" class="admin-container">
+        <!-- Sidebar -->
+        <div class="sidebar" id="sidebar">
+            <div class="logo">
+                <h2>Celizes Catering</h2>
+                <p>Admin Portal v2</p>
+            </div>
+            <div class="nav-item active" onclick="showTab('dashboard')">
+                📊 Dashboard
+            </div>
+            <div class="nav-item" onclick="showTab('menu')">
+                🍽️ Menu Items
+            </div>
+            <div class="nav-item" onclick="showTab('analytics')">
+                📈 Analytics
+            </div>
+            <div class="nav-item" onclick="showTab('images')">
+                🖼️ Image Manager
+            </div>
+            <div class="nav-item" onclick="showTab('content')">
+                📝 Content Editor
+            </div>
+            <div class="nav-item" onclick="showTab('quotes')">
+                💬 Quotes & Orders
+            </div>
+            <div class="nav-item" onclick="showTab('settings')">
+                ⚙️ Settings
+            </div>
+        </div>
+
+        <!-- Main Content -->
+        <div class="main-content">
+            <div class="header">
+                <div>
+                    <h1 id="pageTitle">Dashboard</h1>
+                    <p style="color: var(--gray); margin-top: 0.25rem;">Welcome back! Here's what's happening.</p>
+                </div>
+                <button class="btn btn-secondary" onclick="logout()">Logout</button>
+            </div>
+
+            <!-- Dashboard Tab -->
+            <div id="dashboard" class="tab-content active">
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <h3>Today's Visitors</h3>
+                        <div class="value" id="todayVisitors">0</div>
+                        <div class="change positive">
+                            <span>↑ 12%</span>
+                            <span style="color: var(--gray);">vs yesterday</span>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <h3>Total Orders</h3>
+                        <div class="value" id="totalOrders">0</div>
+                        <div class="change positive">
+                            <span>↑ 8%</span>
+                            <span style="color: var(--gray);">vs last week</span>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <h3>Quote Requests</h3>
+                        <div class="value" id="quoteRequests">0</div>
+                        <div class="change positive">
+                            <span>↑ 15%</span>
+                            <span style="color: var(--gray);">this month</span>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <h3>Menu Items</h3>
+                        <div class="value" id="menuItemsCount">18</div>
+                        <div class="change" style="color: var(--gray);">
+                            <span>All categories</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="chart-container">
+                    <h3>Visitor Trends (Last 7 Days)</h3>
+                    <div class="chart-wrapper">
+                        <canvas id="visitorChart"></canvas>
+                    </div>
+                </div>
+
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem;">
+                    <div class="chart-container">
+                        <h3>Popular Menu Items</h3>
+                        <div class="chart-wrapper">
+                            <canvas id="popularItemsChart"></canvas>
+                        </div>
+                    </div>
+                    <div class="chart-container">
+                        <h3>Traffic Sources</h3>
+                        <div class="chart-wrapper">
+                            <canvas id="trafficChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Menu Items Tab -->
+            <div id="menu" class="tab-content">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;">
+                    <h2 style="color: var(--gold); font-size: 1.5rem;">Manage Menu Items</h2>
+                    <button class="btn" onclick="showAddMenuItem()">+ Add New Item</button>
+                </div>
+
+                <div id="menuItemsList" class="menu-items-grid"></div>
+            </div>
+
+            <!-- Analytics Tab -->
+            <div id="analytics" class="tab-content">
+                <h2 style="color: var(--gold); font-size: 1.5rem; margin-bottom: 2rem;">Advanced Analytics</h2>
+
+                <div class="chart-container">
+                    <h3>Revenue Over Time</h3>
+                    <div class="chart-wrapper" style="height: 350px;">
+                        <canvas id="revenueChart"></canvas>
+                    </div>
+                </div>
+
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; margin-top: 1.5rem;">
+                    <div class="chart-container">
+                        <h3>Device Breakdown</h3>
+                        <div class="chart-wrapper">
+                            <canvas id="deviceChart"></canvas>
+                        </div>
+                    </div>
+                    <div class="chart-container">
+                        <h3>Peak Hours</h3>
+                        <div class="chart-wrapper">
+                            <canvas id="peakHoursChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Images Tab -->
+            <div id="images" class="tab-content">
+                <h2 style="color: var(--gold); font-size: 1.5rem; margin-bottom: 2rem;">Image Manager</h2>
+
+                <div class="image-upload" id="imageUpload" onclick="document.getElementById('fileInput').click()">
+                    <div style="font-size: 3rem; margin-bottom: 1rem;">📸</div>
+                    <h3 style="color: var(--gold); margin-bottom: 0.5rem;">Upload Images</h3>
+                    <p style="color: var(--gray);">Click to browse or drag and drop images here</p>
+                    <input type="file" id="fileInput" hidden accept="image/*" multiple onchange="handleFileUpload(event)">
+                </div>
+
+                <div id="imageGallery" class="image-preview"></div>
+            </div>
+
+            <!-- Content Editor Tab -->
+            <div id="content" class="tab-content">
+                <h2 style="color: var(--gold); font-size: 1.5rem; margin-bottom: 2rem;">Edit Website Content</h2>
+
+                <div style="max-width: 800px;">
+                    <div class="form-group">
+                        <label>Business Name</label>
+                        <input type="text" id="businessName" value="Celizes Catering">
+                    </div>
+
+                    <div class="form-group">
+                        <label>Tagline</label>
+                        <input type="text" id="tagline" value="Taste of Africa">
+                    </div>
+
+                    <div class="form-group">
+                        <label>Hero Description</label>
+                        <textarea id="heroDescription">Bringing authentic African cuisine to Thunder Bay, Ontario. Experience the rich flavors and cultural traditions of Africa at your next event.</textarea>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Mission Statement</label>
+                        <textarea id="missionStatement">Bring the authentic taste of African cuisine to the world. We celebrate culture, family, and tradition through every dish we serve.</textarea>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Phone Number 1</label>
+                        <input type="tel" id="phone1" value="+1 (249) 885-1296">
+                    </div>
+
+                    <div class="form-group">
+                        <label>Phone Number 2</label>
+                        <input type="tel" id="phone2" value="+1 (807) 357-9272">
+                    </div>
+
+                    <div class="form-group">
+                        <label>Business Email</label>
+                        <input type="email" id="businessEmail" value="celizescatering@gmail.com">
+                    </div>
+
+                    <div class="form-group">
+                        <label>Location</label>
+                        <input type="text" id="location" value="Thunder Bay, Ontario">
+                    </div>
+
+                    <button class="btn" onclick="saveContent()">💾 Save All Changes</button>
+                </div>
+            </div>
+
+            <!-- Quotes Tab -->
+            <div id="quotes" class="tab-content">
+                <h2 style="color: var(--gold); font-size: 1.5rem; margin-bottom: 2rem;">Quote Requests & Orders</h2>
+
+                <div class="data-table">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Date</th>
+                                <th>Name</th>
+                                <th>Event Type</th>
+                                <th>Guests</th>
+                                <th>Contact</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody id="quotesTableBody">
+                            <tr>
+                                <td colspan="6" style="text-align: center; padding: 2rem; color: var(--gray);">
+                                    No quote requests yet. Data will appear here when customers submit quotes.
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Settings Tab -->
+            <div id="settings" class="tab-content">
+                <h2 style="color: var(--gold); font-size: 1.5rem; margin-bottom: 2rem;">Settings</h2>
+
+                <div style="max-width: 600px;">
+                    <h3 style="color: var(--gold); margin-bottom: 1.5rem;">Change Password</h3>
+                    <div class="form-group">
+                        <label>New Username</label>
+                        <input type="text" id="newUsername" placeholder="Enter new username">
+                    </div>
+                    <div class="form-group">
+                        <label>New Password</label>
+                        <input type="password" id="newPassword" placeholder="Enter new password">
+                    </div>
+                    <button class="btn" onclick="changePassword()">Update Credentials</button>
+
+                    <hr style="margin: 3rem 0; border-color: var(--gold); opacity: 0.2;">
+
+                    <h3 style="color: var(--gold); margin-bottom: 1.5rem;">Data Management</h3>
+                    <button class="btn btn-secondary" onclick="exportData()">📥 Export All Data</button>
+                    <button class="btn btn-secondary" onclick="window.open('/', '_blank')" style="margin-left: 1rem;">🌐 View Live Website</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add/Edit Menu Item Modal -->
+    <div id="menuItemModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 id="modalTitle">Add Menu Item</h2>
+                <button class="modal-close" onclick="closeMenuItemModal()">×</button>
+            </div>
+            <div class="form-group">
+                <label>Item Name</label>
+                <input type="text" id="modalItemName" placeholder="e.g., Jollof Rice with Chicken">
+            </div>
+            <div class="form-group">
+                <label>Category</label>
+                <select id="modalItemCategory">
+                    <option>Main Dishes</option>
+                    <option>Soups & Stews</option>
+                    <option>Baked Goods & Cakes</option>
+                    <option>Snacks & Drinks</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label>Price</label>
+                <input type="text" id="modalItemPrice" placeholder="e.g., $25.00">
+            </div>
+            <div class="form-group">
+                <label>Description</label>
+                <textarea id="modalItemDescription" placeholder="Brief description of the item"></textarea>
+            </div>
+            <div class="form-group">
+                <label>Image URL (optional)</label>
+                <input type="text" id="modalItemImage" placeholder="https://...">
+            </div>
+            <button class="btn" onclick="saveMenuItem()">Save Menu Item</button>
+        </div>
+    </div>
+
+    <script>
+        // Configuration
+        const API_BASE = '';
+        const DEFAULT_USERNAME = 'admin';
+        const DEFAULT_PASSWORD = 'celizes2025';
+
+        // State
+        let menuItems = [];
+        let editingItemId = null;
+        let charts = {};
+
+        // Authentication
+        function login() {
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+
+            const savedUsername = localStorage.getItem('adminUsername') || DEFAULT_USERNAME;
+            const savedPassword = localStorage.getItem('adminPassword') || DEFAULT_PASSWORD;
+
+            if (username === savedUsername && password === savedPassword) {
+                sessionStorage.setItem('adminLoggedIn', 'true');
+                document.getElementById('loginContainer').style.display = 'none';
+                document.getElementById('adminContainer').style.display = 'block';
+                initDashboard();
+            } else {
+                document.getElementById('loginError').textContent = 'Invalid credentials';
+            }
+        }
+
+        function logout() {
+            sessionStorage.removeItem('adminLoggedIn');
+            location.reload();
+        }
+
+        function checkAuth() {
+            if (sessionStorage.getItem('adminLoggedIn') === 'true') {
+                document.getElementById('loginContainer').style.display = 'none';
+                document.getElementById('adminContainer').style.display = 'block';
+                initDashboard();
+            }
+        }
+
+        // Navigation
+        function showTab(tabName) {
+            const titles = {
+                dashboard: 'Dashboard',
+                menu: 'Menu Items',
+                analytics: 'Analytics',
+                images: 'Image Manager',
+                content: 'Content Editor',
+                quotes: 'Quotes & Orders',
+                settings: 'Settings'
+            };
+
+            document.getElementById('pageTitle').textContent = titles[tabName];
+
+            document.querySelectorAll('.nav-item').forEach(item => {
+                item.classList.remove('active');
+            });
+            event.target.classList.add('active');
+
+            document.querySelectorAll('.tab-content').forEach(content => {
+                content.classList.remove('active');
+            });
+            document.getElementById(tabName).classList.add('active');
+
+            if (tabName === 'dashboard') {
+                updateDashboardCharts();
+            }
+        }
+
+        // Dashboard Initialization
+        function initDashboard() {
+            loadMenuItems();
+            createCharts();
+            updateStats();
+            loadImages();
+        }
+
+        // Charts
+        function createCharts() {
+            // Visitor Chart
+            const visitorCtx = document.getElementById('visitorChart').getContext('2d');
+            charts.visitor = new Chart(visitorCtx, {
+                type: 'line',
+                data: {
+                    labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
+                    datasets: [{
+                        label: 'Visitors',
+                        data: [65, 78, 90, 81, 96, 105, 112],
+                        borderColor: '#D4AF37',
+                        backgroundColor: 'rgba(212, 175, 55, 0.1)',
+                        tension: 0.4,
+                        fill: true
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { display: false }
+                    },
+                    scales: {
+                        y: { beginAtZero: true, grid: { color: 'rgba(212, 175, 55, 0.1)' } }
+                    }
+                }
+            });
+
+            // Popular Items Chart
+            const popularCtx = document.getElementById('popularItemsChart').getContext('2d');
+            charts.popular = new Chart(popularCtx, {
+                type: 'bar',
+                data: {
+                    labels: ['Jollof Rice', 'Waakye', 'Fried Rice', 'Light Soup', 'Kenkey'],
+                    datasets: [{
+                        label: 'Orders',
+                        data: [45, 38, 32, 28, 25],
+                        backgroundColor: '#D4AF37'
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: { legend: { display: false } },
+                    scales: { y: { beginAtZero: true } }
+                }
+            });
+
+            // Traffic Chart
+            const trafficCtx = document.getElementById('trafficChart').getContext('2d');
+            charts.traffic = new Chart(trafficCtx, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Direct', 'Social', 'Search', 'Referral'],
+                    datasets: [{
+                        data: [45, 25, 20, 10],
+                        backgroundColor: ['#D4AF37', '#B8941F', '#F0D98E', '#E0E0E0']
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false
+                }
+            });
+
+            // Revenue Chart
+            const revenueCtx = document.getElementById('revenueChart').getContext('2d');
+            charts.revenue = new Chart(revenueCtx, {
+                type: 'line',
+                data: {
+                    labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
+                    datasets: [{
+                        label: 'Revenue ($)',
+                        data: [1200, 1900, 1500, 2100, 2500, 2800],
+                        borderColor: '#10B981',
+                        backgroundColor: 'rgba(16, 185, 129, 0.1)',
+                        tension: 0.4,
+                        fill: true
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: { y: { beginAtZero: true } }
+                }
+            });
+
+            // Device Chart
+            const deviceCtx = document.getElementById('deviceChart').getContext('2d');
+            charts.device = new Chart(deviceCtx, {
+                type: 'pie',
+                data: {
+                    labels: ['Mobile', 'Desktop', 'Tablet'],
+                    datasets: [{
+                        data: [60, 30, 10],
+                        backgroundColor: ['#D4AF37', '#B8941F', '#F0D98E']
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false
+                }
+            });
+
+            // Peak Hours Chart
+            const peakCtx = document.getElementById('peakHoursChart').getContext('2d');
+            charts.peakHours = new Chart(peakCtx, {
+                type: 'bar',
+                data: {
+                    labels: ['9AM', '12PM', '3PM', '6PM', '9PM'],
+                    datasets: [{
+                        label: 'Visitors',
+                        data: [20, 45, 30, 60, 35],
+                        backgroundColor: '#3B82F6'
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: { legend: { display: false } }
+                }
+            });
+        }
+
+        function updateDashboardCharts() {
+            // Refresh charts if needed
+            Object.values(charts).forEach(chart => {
+                if (chart) chart.update();
+            });
+        }
+
+        // Stats
+        function updateStats() {
+            // In production, fetch from API
+            document.getElementById('todayVisitors').textContent = Math.floor(Math.random() * 200 + 50);
+            document.getElementById('totalOrders').textContent = Math.floor(Math.random() * 50 + 10);
+            document.getElementById('quoteRequests').textContent = Math.floor(Math.random() * 20 + 5);
+        }
+
+        // Menu Items
+        function loadMenuItems() {
+            const saved = localStorage.getItem('menuItems');
+            if (saved) {
+                menuItems = JSON.parse(saved);
+            } else {
+                // Default menu items
+                menuItems = [
+                    {id: 1, name: 'Waakye with Fish and Egg', category: 'Main Dishes', price: '$25.00', description: 'Traditional Ghanaian rice and beans', image: ''},
+                    {id: 2, name: 'Jollof with Chicken', category: 'Main Dishes', price: '$25.00', description: 'Flavorful West African rice', image: ''},
+                    {id: 3, name: 'Fried Rice with Chicken', category: 'Main Dishes', price: '$25.00', description: 'Savory fried rice', image: ''},
+                    {id: 4, name: 'Ga Kenkey with Tilapia', category: 'Main Dishes', price: '$25.00', description: 'Fermented corn dough', image: ''},
+                    {id: 5, name: 'Light Soup', category: 'Soups & Stews', price: '2L: $150 | 4L: $200', description: 'Traditional tomato-based soup', image: ''},
+                    {id: 6, name: 'Groundnut Soup', category: 'Soups & Stews', price: '2L: $150 | 4L: $200', description: 'Rich peanut butter soup', image: ''},
+                    {id: 7, name: 'Meat Pie (5 pieces)', category: 'Baked Goods & Cakes', price: '$22.00', description: 'Savory pastry', image: ''},
+                    {id: 8, name: 'Puff-Puff (5 pieces)', category: 'Baked Goods & Cakes', price: '$10.00', description: 'Sweet fried dough balls', image: ''}
+                ];
+                localStorage.setItem('menuItems', JSON.stringify(menuItems));
+            }
+            displayMenuItems();
+            document.getElementById('menuItemsCount').textContent = menuItems.length;
+        }
+
+        function displayMenuItems() {
+            const container = document.getElementById('menuItemsList');
+            container.innerHTML = '';
+
+            menuItems.forEach(item => {
+                const card = document.createElement('div');
+                card.className = 'menu-item-card';
+                card.innerHTML = `
+                    <div class="menu-item-image">
+                        ${item.image ? `<img src="${item.image}" alt="${item.name}">` : '<span style="font-size: 2rem;">🍽️</span>'}
+                    </div>
+                    <div class="menu-item-details">
+                        <h4>${item.name}</h4>
+                        <div class="price">${item.price}</div>
+                        <span class="category">${item.category}</span>
+                        <p class="description">${item.description || ''}</p>
+                    </div>
+                    <div class="menu-item-actions">
+                        <button class="btn btn-secondary" onclick="editMenuItem(${item.id})">Edit</button>
+                        <button class="btn btn-danger" onclick="deleteMenuItem(${item.id})">Delete</button>
+                    </div>
+                `;
+                container.appendChild(card);
+            });
+        }
+
+        function showAddMenuItem() {
+            editingItemId = null;
+            document.getElementById('modalTitle').textContent = 'Add Menu Item';
+            document.getElementById('modalItemName').value = '';
+            document.getElementById('modalItemCategory').value = 'Main Dishes';
+            document.getElementById('modalItemPrice').value = '';
+            document.getElementById('modalItemDescription').value = '';
+            document.getElementById('modalItemImage').value = '';
+            document.getElementById('menuItemModal').classList.add('active');
+        }
+
+        function editMenuItem(id) {
+            editingItemId = id;
+            const item = menuItems.find(i => i.id === id);
+            if (!item) return;
+
+            document.getElementById('modalTitle').textContent = 'Edit Menu Item';
+            document.getElementById('modalItemName').value = item.name;
+            document.getElementById('modalItemCategory').value = item.category;
+            document.getElementById('modalItemPrice').value = item.price;
+            document.getElementById('modalItemDescription').value = item.description || '';
+            document.getElementById('modalItemImage').value = item.image || '';
+            document.getElementById('menuItemModal').classList.add('active');
+        }
+
+        function saveMenuItem() {
+            const item = {
+                id: editingItemId || Date.now(),
+                name: document.getElementById('modalItemName').value,
+                category: document.getElementById('modalItemCategory').value,
+                price: document.getElementById('modalItemPrice').value,
+                description: document.getElementById('modalItemDescription').value,
+                image: document.getElementById('modalItemImage').value
+            };
+
+            if (!item.name || !item.price) {
+                alert('Please fill in name and price');
+                return;
+            }
+
+            if (editingItemId) {
+                const index = menuItems.findIndex(i => i.id === editingItemId);
+                menuItems[index] = item;
+            } else {
+                menuItems.push(item);
+            }
+
+            localStorage.setItem('menuItems', JSON.stringify(menuItems));
+            displayMenuItems();
+            closeMenuItemModal();
+            showAlert('success', 'Menu item saved successfully!');
+            document.getElementById('menuItemsCount').textContent = menuItems.length;
+        }
+
+        function deleteMenuItem(id) {
+            if (confirm('Are you sure you want to delete this item?')) {
+                menuItems = menuItems.filter(i => i.id !== id);
+                localStorage.setItem('menuItems', JSON.stringify(menuItems));
+                displayMenuItems();
+                showAlert('success', 'Menu item deleted');
+                document.getElementById('menuItemsCount').textContent = menuItems.length;
+            }
+        }
+
+        function closeMenuItemModal() {
+            document.getElementById('menuItemModal').classList.remove('active');
+        }
+
+        // Image Upload
+        function handleFileUpload(event) {
+            const files = event.target.files;
+            for (let file of files) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    addImageToGallery(e.target.result);
+                };
+                reader.readAsDataURL(file);
+            }
+        }
+
+        function addImageToGallery(url) {
+            let images = JSON.parse(localStorage.getItem('uploadedImages') || '[]');
+            images.push({id: Date.now(), url});
+            localStorage.setItem('uploadedImages', JSON.stringify(images));
+            loadImages();
+        }
+
+        function loadImages() {
+            const images = JSON.parse(localStorage.getItem('uploadedImages') || '[]');
+            const gallery = document.getElementById('imageGallery');
+            gallery.innerHTML = '';
+
+            images.forEach(img => {
+                const div = document.createElement('div');
+                div.className = 'image-preview-item';
+                div.innerHTML = `
+                    <img src="${img.url}" alt="Uploaded image">
+                    <button class="remove" onclick="deleteImage(${img.id})">×</button>
+                `;
+                gallery.appendChild(div);
+            });
+        }
+
+        function deleteImage(id) {
+            let images = JSON.parse(localStorage.getItem('uploadedImages') || '[]');
+            images = images.filter(img => img.id !== id);
+            localStorage.setItem('uploadedImages', JSON.stringify(images));
+            loadImages();
+        }
+
+        // Content
+        function saveContent() {
+            const content = {
+                businessName: document.getElementById('businessName').value,
+                tagline: document.getElementById('tagline').value,
+                heroDescription: document.getElementById('heroDescription').value,
+                missionStatement: document.getElementById('missionStatement').value,
+                phone1: document.getElementById('phone1').value,
+                phone2: document.getElementById('phone2').value,
+                businessEmail: document.getElementById('businessEmail').value,
+                location: document.getElementById('location').value
+            };
+
+            localStorage.setItem('siteContent', JSON.stringify(content));
+            showAlert('success', 'Content saved successfully!');
+        }
+
+        // Settings
+        function changePassword() {
+            const username = document.getElementById('newUsername').value;
+            const password = document.getElementById('newPassword').value;
+
+            if (username && password) {
+                localStorage.setItem('adminUsername', username);
+                localStorage.setItem('adminPassword', password);
+                showAlert('success', 'Credentials updated!');
+                document.getElementById('newUsername').value = '';
+                document.getElementById('newPassword').value = '';
+            } else {
+                alert('Please enter both username and password');
+            }
+        }
+
+        function exportData() {
+            const data = {
+                menuItems: menuItems,
+                content: JSON.parse(localStorage.getItem('siteContent') || '{}'),
+                images: JSON.parse(localStorage.getItem('uploadedImages') || '[]'),
+                timestamp: new Date().toISOString()
+            };
+
+            const blob = new Blob([JSON.stringify(data, null, 2)], {type: 'application/json'});
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `celizes-data-${Date.now()}.json`;
+            a.click();
+            showAlert('success', 'Data exported successfully!');
+        }
+
+        // Utilities
+        function showAlert(type, message) {
+            const alert = document.createElement('div');
+            alert.className = `alert alert-${type}`;
+            alert.textContent = message;
+            document.querySelector('.main-content').insertBefore(alert, document.querySelector('.main-content').firstChild);
+            setTimeout(() => alert.remove(), 3000);
+        }
+
+        // Drag and drop
+        const uploadArea = document.getElementById('imageUpload');
+        if (uploadArea) {
+            ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+                uploadArea.addEventListener(eventName, e => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                });
+            });
+
+            ['dragenter', 'dragover'].forEach(eventName => {
+                uploadArea.addEventListener(eventName, () => {
+                    uploadArea.classList.add('dragging');
+                });
+            });
+
+            ['dragleave', 'drop'].forEach(eventName => {
+                uploadArea.addEventListener(eventName, () => {
+                    uploadArea.classList.remove('dragging');
+                });
+            });
+
+            uploadArea.addEventListener('drop', e => {
+                const files = e.dataTransfer.files;
+                document.getElementById('fileInput').files = files;
+                handleFileUpload({target: {files}});
+            });
+        }
+
+        // Initialize
+        checkAuth();
+    </script>
+</body>
+</html>
