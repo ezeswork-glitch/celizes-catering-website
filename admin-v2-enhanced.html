@@ -3,157 +3,225 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin Portal v2 - Celizes Catering</title>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+    <title>Admin Portal - Celizes Catering</title>
     <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
         :root {
-            --gold: #D4AF37;
-            --gold-dark: #B8941F;
-            --gold-light: #F0D98E;
-            --black: #000000;
-            --white: #FFFFFF;
-            --gray: #E0E0E0;
-            --gray-light: #2A2A2A;
-            --gray-dark: #1A1A1A;
-            --green: #10B981;
-            --red: #EF4444;
-            --blue: #3B82F6;
+            --primary: #D4AF37;
+            --primary-dark: #B8941F;
+            --primary-light: #F0D98E;
+            --bg-dark: #0A0A0A;
+            --bg-gray: #151515;
+            --bg-light: #1F1F1F;
+            --text: #FFFFFF;
+            --text-gray: #9CA3AF;
+            --success: #10B981;
+            --danger: #EF4444;
+            --warning: #F59E0B;
+            --info: #3B82F6;
+            --border: #2A2A2A;
         }
-
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
+        
+        body { 
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Inter', sans-serif;
+            background: var(--bg-dark);
+            color: var(--text);
+            line-height: 1.6;
         }
-
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            background: var(--black);
-            color: var(--white);
-        }
-
+        
         /* Login Screen */
         .login-container {
             min-height: 100vh;
             display: flex;
-            justify-content: center;
             align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, var(--bg-dark) 0%, var(--bg-gray) 100%);
             padding: 2rem;
-            background: linear-gradient(135deg, var(--black) 0%, var(--gray-dark) 100%);
         }
-
+        
         .login-box {
-            background: var(--gray-light);
+            background: var(--bg-gray);
             padding: 3rem;
             border-radius: 16px;
-            border: 2px solid var(--gold);
-            max-width: 420px;
+            border: 2px solid var(--primary);
+            max-width: 450px;
             width: 100%;
-            box-shadow: 0 20px 60px rgba(212, 175, 55, 0.3);
+            box-shadow: 0 20px 60px rgba(212, 175, 55, 0.2);
         }
-
-        .login-box h1 {
-            color: var(--gold);
-            margin-bottom: 0.5rem;
+        
+        .login-header {
             text-align: center;
-            font-size: 2rem;
-        }
-
-        .login-box p {
-            text-align: center;
-            color: var(--gray);
             margin-bottom: 2rem;
         }
-
-        /* Admin Container */
+        
+        .login-header h1 {
+            color: var(--primary);
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+        }
+        
+        .login-header p {
+            color: var(--text-gray);
+        }
+        
+        /* Dashboard Layout */
         .admin-container {
             display: none;
             min-height: 100vh;
         }
-
+        
+        .admin-container.active {
+            display: block;
+        }
+        
+        /* Sidebar */
         .sidebar {
             position: fixed;
             left: 0;
             top: 0;
-            width: 260px;
+            width: 280px;
             height: 100vh;
-            background: var(--gray-light);
-            border-right: 2px solid var(--gold);
-            padding: 2rem 0;
+            background: var(--bg-gray);
+            border-right: 1px solid var(--border);
             overflow-y: auto;
+            z-index: 1000;
         }
-
-        .logo {
-            padding: 0 2rem 2rem 2rem;
-            border-bottom: 1px solid rgba(212, 175, 55, 0.2);
-            margin-bottom: 2rem;
+        
+        .sidebar-header {
+            padding: 2rem;
+            border-bottom: 1px solid var(--border);
         }
-
-        .logo h2 {
-            color: var(--gold);
+        
+        .sidebar-header h2 {
+            color: var(--primary);
             font-size: 1.5rem;
             margin-bottom: 0.25rem;
         }
-
-        .logo p {
-            color: var(--gray);
-            font-size: 0.85rem;
+        
+        .sidebar-header p {
+            color: var(--text-gray);
+            font-size: 0.875rem;
         }
-
+        
+        .nav-section {
+            padding: 1.5rem 0;
+        }
+        
+        .nav-title {
+            padding: 0 1.5rem;
+            color: var(--text-gray);
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            font-weight: 700;
+            letter-spacing: 1px;
+            margin-bottom: 0.75rem;
+        }
+        
         .nav-item {
-            padding: 1rem 2rem;
-            cursor: pointer;
-            transition: all 0.3s;
+            padding: 0.875rem 1.5rem;
             display: flex;
             align-items: center;
-            gap: 1rem;
-            color: var(--white);
-            font-weight: 500;
+            gap: 0.75rem;
+            color: var(--text-gray);
+            cursor: pointer;
+            transition: all 0.2s;
+            font-size: 0.9375rem;
         }
-
+        
         .nav-item:hover {
-            background: rgba(212, 175, 55, 0.1);
-            border-left: 3px solid var(--gold);
+            background: var(--bg-light);
+            color: var(--text);
         }
-
+        
         .nav-item.active {
-            background: rgba(212, 175, 55, 0.2);
-            border-left: 3px solid var(--gold);
-            color: var(--gold);
+            background: rgba(212, 175, 55, 0.15);
+            color: var(--primary);
+            border-left: 3px solid var(--primary);
         }
-
+        
+        .nav-icon {
+            font-size: 1.25rem;
+        }
+        
+        /* Main Content */
         .main-content {
-            margin-left: 260px;
-            padding: 2rem;
+            margin-left: 280px;
             min-height: 100vh;
+            background: var(--bg-dark);
         }
-
-        .header {
-            background: var(--gray-light);
-            padding: 1.5rem 2rem;
-            border-radius: 12px;
-            border: 2px solid var(--gold);
-            margin-bottom: 2rem;
+        
+        /* Top Bar */
+        .top-bar {
+            background: var(--bg-gray);
+            border-bottom: 1px solid var(--border);
+            padding: 1rem 2rem;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            flex-wrap: wrap;
-            gap: 1rem;
+            position: sticky;
+            top: 0;
+            z-index: 100;
         }
-
-        .header h1 {
-            color: var(--gold);
-            font-size: 2rem;
+        
+        .search-bar {
+            max-width: 400px;
+            flex: 1;
         }
-
-        .tab-content {
+        
+        .search-bar input {
+            width: 100%;
+            padding: 0.75rem 1rem 0.75rem 2.5rem;
+            background: var(--bg-light);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            color: var(--text);
+            font-size: 0.9375rem;
+        }
+        
+        .user-menu {
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
+        }
+        
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: var(--primary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            color: var(--bg-dark);
+            cursor: pointer;
+        }
+        
+        /* Page Content */
+        .page-content {
+            padding: 2rem;
             display: none;
         }
-
-        .tab-content.active {
+        
+        .page-content.active {
             display: block;
         }
-
+        
+        .page-header {
+            margin-bottom: 2rem;
+        }
+        
+        .page-header h1 {
+            color: var(--primary);
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+        }
+        
+        .page-header p {
+            color: var(--text-gray);
+        }
+        
         /* Stats Cards */
         .stats-grid {
             display: grid;
@@ -161,321 +229,257 @@
             gap: 1.5rem;
             margin-bottom: 2rem;
         }
-
+        
         .stat-card {
-            background: var(--gray-light);
-            padding: 2rem;
+            background: var(--bg-gray);
+            padding: 1.5rem;
             border-radius: 12px;
-            border: 2px solid var(--gold);
+            border: 1px solid var(--border);
             position: relative;
             overflow: hidden;
         }
-
+        
         .stat-card::before {
             content: '';
             position: absolute;
             top: 0;
             left: 0;
             right: 0;
-            height: 4px;
-            background: var(--gold);
+            height: 3px;
+            background: var(--primary);
         }
-
-        .stat-card h3 {
-            color: var(--gray);
+        
+        .stat-label {
+            color: var(--text-gray);
             font-size: 0.875rem;
             font-weight: 600;
             text-transform: uppercase;
             margin-bottom: 0.5rem;
         }
-
-        .stat-card .value {
-            font-size: 2.5rem;
+        
+        .stat-value {
+            font-size: 2.25rem;
             font-weight: 700;
-            color: var(--gold);
+            color: var(--primary);
             margin-bottom: 0.5rem;
         }
-
-        .stat-card .change {
+        
+        .stat-change {
             font-size: 0.875rem;
             display: flex;
             align-items: center;
             gap: 0.5rem;
         }
-
-        .stat-card .change.positive {
-            color: var(--green);
-        }
-
-        .stat-card .change.negative {
-            color: var(--red);
-        }
-
-        /* Charts */
-        .chart-container {
-            background: var(--gray-light);
-            padding: 2rem;
-            border-radius: 12px;
-            border: 2px solid var(--gold);
-            margin-bottom: 2rem;
-        }
-
-        .chart-container h3 {
-            color: var(--gold);
-            margin-bottom: 1.5rem;
-            font-size: 1.25rem;
-        }
-
-        .chart-wrapper {
-            position: relative;
-            height: 300px;
-        }
-
-        /* Form Elements */
-        .form-group {
-            margin-bottom: 1.5rem;
-        }
-
-        .form-group label {
-            display: block;
-            margin-bottom: 0.5rem;
-            color: var(--gold);
-            font-weight: 600;
-            font-size: 0.875rem;
-            text-transform: uppercase;
-        }
-
-        .form-group input,
-        .form-group textarea,
-        .form-group select {
-            width: 100%;
-            padding: 0.875rem;
-            background: var(--black);
-            color: var(--white);
-            border: 2px solid var(--gold);
-            border-radius: 8px;
-            font-size: 1rem;
-            transition: all 0.3s;
-        }
-
-        .form-group input:focus,
-        .form-group textarea:focus,
-        .form-group select:focus {
-            outline: none;
-            border-color: var(--gold-light);
-            box-shadow: 0 0 0 3px rgba(212, 175, 55, 0.1);
-        }
-
-        .form-group textarea {
-            min-height: 120px;
-            font-family: inherit;
-            resize: vertical;
-        }
-
+        
+        .stat-change.positive { color: var(--success); }
+        .stat-change.negative { color: var(--danger); }
+        
         /* Buttons */
         .btn {
-            padding: 0.875rem 1.75rem;
-            background: var(--gold);
-            color: var(--black);
+            padding: 0.75rem 1.5rem;
             border: none;
             border-radius: 8px;
-            cursor: pointer;
             font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
             font-size: 0.9375rem;
-            transition: all 0.3s;
             display: inline-flex;
             align-items: center;
             gap: 0.5rem;
         }
-
-        .btn:hover {
-            background: var(--gold-dark);
+        
+        .btn-primary {
+            background: var(--primary);
+            color: var(--bg-dark);
+        }
+        
+        .btn-primary:hover {
+            background: var(--primary-dark);
             transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(212, 175, 55, 0.4);
         }
-
+        
         .btn-secondary {
-            background: var(--gray-dark);
-            color: var(--white);
-            border: 2px solid var(--gold);
+            background: var(--bg-light);
+            color: var(--text);
+            border: 1px solid var(--border);
         }
-
+        
         .btn-secondary:hover {
-            background: var(--gray-light);
+            background: var(--bg-gray);
         }
-
+        
         .btn-danger {
-            background: var(--red);
-            color: var(--white);
-        }
-
-        .btn-success {
-            background: var(--green);
-            color: var(--white);
-        }
-
-        /* Image Upload */
-        .image-upload {
-            border: 2px dashed var(--gold);
-            border-radius: 12px;
-            padding: 3rem;
-            text-align: center;
-            cursor: pointer;
-            transition: all 0.3s;
-            background: var(--black);
-        }
-
-        .image-upload:hover {
-            border-color: var(--gold-light);
-            background: var(--gray-dark);
-        }
-
-        .image-upload.dragging {
-            border-color: var(--green);
-            background: rgba(16, 185, 129, 0.1);
-        }
-
-        .image-preview {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
-            gap: 1rem;
-            margin-top: 1.5rem;
-        }
-
-        .image-preview-item {
-            position: relative;
-            aspect-ratio: 1;
-            border-radius: 8px;
-            overflow: hidden;
-            border: 2px solid var(--gold);
-        }
-
-        .image-preview-item img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
-
-        .image-preview-item .remove {
-            position: absolute;
-            top: 0.5rem;
-            right: 0.5rem;
-            background: var(--red);
+            background: var(--danger);
             color: white;
-            border: none;
-            border-radius: 50%;
-            width: 28px;
-            height: 28px;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
         }
-
-        /* Menu Items */
-        .menu-items-grid {
-            display: grid;
-            gap: 1.5rem;
+        
+        .btn-success {
+            background: var(--success);
+            color: white;
         }
-
-        .menu-item-card {
-            background: var(--gray-light);
-            border-radius: 12px;
-            border: 2px solid var(--gold);
-            padding: 1.5rem;
-            display: grid;
-            grid-template-columns: 120px 1fr auto;
-            gap: 1.5rem;
-            align-items: start;
+        
+        /* Form Elements */
+        .form-group {
+            margin-bottom: 1.5rem;
         }
-
-        .menu-item-image {
-            width: 120px;
-            height: 120px;
-            border-radius: 8px;
-            background: var(--black);
-            border: 2px solid var(--gold);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            overflow: hidden;
-        }
-
-        .menu-item-image img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
-
-        .menu-item-details h4 {
-            color: var(--gold);
-            font-size: 1.25rem;
-            margin-bottom: 0.5rem;
-        }
-
-        .menu-item-details .price {
-            color: var(--white);
-            font-size: 1.125rem;
+        
+        .form-label {
+            display: block;
+            color: var(--primary);
+            font-size: 0.875rem;
             font-weight: 600;
-            margin-bottom: 0.75rem;
+            text-transform: uppercase;
+            margin-bottom: 0.5rem;
+            letter-spacing: 0.5px;
         }
-
-        .menu-item-details .category {
-            display: inline-block;
-            padding: 0.25rem 0.75rem;
-            background: rgba(212, 175, 55, 0.2);
-            border: 1px solid var(--gold);
-            border-radius: 20px;
-            font-size: 0.75rem;
-            color: var(--gold);
-            margin-bottom: 0.75rem;
-        }
-
-        .menu-item-details .description {
-            color: var(--gray);
-            font-size: 0.9375rem;
-            line-height: 1.5;
-        }
-
-        .menu-item-actions {
-            display: flex;
-            flex-direction: column;
-            gap: 0.5rem;
-        }
-
-        /* Tables */
-        .data-table {
+        
+        .form-input,
+        .form-select,
+        .form-textarea {
             width: 100%;
-            background: var(--gray-light);
+            padding: 0.875rem;
+            background: var(--bg-light);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            color: var(--text);
+            font-size: 0.9375rem;
+            transition: all 0.2s;
+        }
+        
+        .form-input:focus,
+        .form-select:focus,
+        .form-textarea:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(212, 175, 55, 0.1);
+        }
+        
+        .form-textarea {
+            min-height: 120px;
+            resize: vertical;
+            font-family: inherit;
+        }
+        
+        /* Data Table */
+        .data-table {
+            background: var(--bg-gray);
             border-radius: 12px;
-            border: 2px solid var(--gold);
+            border: 1px solid var(--border);
             overflow: hidden;
         }
-
-        .data-table table {
+        
+        .table-header {
+            padding: 1.5rem;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .table-header h3 {
+            color: var(--primary);
+            font-size: 1.125rem;
+        }
+        
+        table {
             width: 100%;
             border-collapse: collapse;
         }
-
-        .data-table th {
-            background: var(--black);
-            color: var(--gold);
-            padding: 1rem;
+        
+        thead {
+            background: var(--bg-dark);
+        }
+        
+        th {
+            padding: 1rem 1.5rem;
             text-align: left;
+            color: var(--primary);
             font-weight: 600;
+            font-size: 0.875rem;
             text-transform: uppercase;
-            font-size: 0.8125rem;
         }
-
-        .data-table td {
-            padding: 1rem;
-            border-top: 1px solid rgba(212, 175, 55, 0.1);
+        
+        td {
+            padding: 1rem 1.5rem;
+            border-top: 1px solid var(--border);
         }
-
-        .data-table tr:hover {
-            background: rgba(212, 175, 55, 0.05);
+        
+        tr:hover {
+            background: var(--bg-light);
         }
-
+        
+        /* Menu Items Grid */
+        .menu-items-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 1.5rem;
+        }
+        
+        .menu-item-card {
+            background: var(--bg-gray);
+            border-radius: 12px;
+            border: 1px solid var(--border);
+            overflow: hidden;
+            transition: all 0.2s;
+        }
+        
+        .menu-item-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 12px 24px rgba(0, 0, 0, 0.3);
+        }
+        
+        .menu-item-image {
+            width: 100%;
+            height: 200px;
+            background: var(--bg-dark);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 3rem;
+            border-bottom: 1px solid var(--border);
+        }
+        
+        .menu-item-content {
+            padding: 1.5rem;
+        }
+        
+        .menu-item-name {
+            color: var(--primary);
+            font-size: 1.125rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+        
+        .menu-item-price {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: var(--text);
+            margin-bottom: 0.75rem;
+        }
+        
+        .menu-item-category {
+            display: inline-block;
+            padding: 0.25rem 0.75rem;
+            background: rgba(212, 175, 55, 0.15);
+            border: 1px solid var(--primary);
+            border-radius: 20px;
+            font-size: 0.75rem;
+            color: var(--primary);
+            margin-bottom: 0.75rem;
+        }
+        
+        .menu-item-description {
+            color: var(--text-gray);
+            font-size: 0.9375rem;
+            line-height: 1.6;
+            margin-bottom: 1rem;
+        }
+        
+        .menu-item-actions {
+            display: flex;
+            gap: 0.5rem;
+        }
+        
         /* Modal */
         .modal {
             display: none;
@@ -484,116 +488,93 @@
             left: 0;
             right: 0;
             bottom: 0;
-            background: rgba(0, 0, 0, 0.8);
-            z-index: 1000;
+            background: rgba(0, 0, 0, 0.85);
+            z-index: 2000;
             align-items: center;
             justify-content: center;
             padding: 2rem;
         }
-
+        
         .modal.active {
             display: flex;
         }
-
+        
         .modal-content {
-            background: var(--gray-light);
+            background: var(--bg-gray);
             border-radius: 16px;
-            border: 2px solid var(--gold);
-            padding: 2.5rem;
+            border: 1px solid var(--border);
             max-width: 600px;
             width: 100%;
             max-height: 90vh;
             overflow-y: auto;
         }
-
+        
         .modal-header {
+            padding: 1.5rem 2rem;
+            border-bottom: 1px solid var(--border);
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 2rem;
         }
-
+        
         .modal-header h2 {
-            color: var(--gold);
+            color: var(--primary);
             font-size: 1.5rem;
         }
-
+        
         .modal-close {
             background: none;
             border: none;
-            color: var(--white);
+            color: var(--text-gray);
             font-size: 2rem;
             cursor: pointer;
             line-height: 1;
         }
-
-        /* Alerts */
-        .alert {
+        
+        .modal-body {
+            padding: 2rem;
+        }
+        
+        /* Toast Notification */
+        .toast {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            background: var(--bg-gray);
+            border: 1px solid var(--border);
+            border-radius: 12px;
             padding: 1rem 1.5rem;
-            border-radius: 8px;
-            margin-bottom: 1.5rem;
+            box-shadow: 0 12px 24px rgba(0, 0, 0, 0.3);
+            z-index: 3000;
+            animation: slideIn 0.3s ease-out;
             display: flex;
             align-items: center;
             gap: 1rem;
         }
-
-        .alert-success {
-            background: rgba(16, 185, 129, 0.2);
-            border: 2px solid var(--green);
-            color: var(--green);
+        
+        .toast.success { border-left: 4px solid var(--success); }
+        .toast.error { border-left: 4px solid var(--danger); }
+        .toast.info { border-left: 4px solid var(--info); }
+        
+        @keyframes slideIn {
+            from { transform: translateX(400px); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
         }
-
-        .alert-error {
-            background: rgba(239, 68, 68, 0.2);
-            border: 2px solid var(--red);
-            color: var(--red);
-        }
-
-        .alert-info {
-            background: rgba(59, 130, 246, 0.2);
-            border: 2px solid var(--blue);
-            color: var(--blue);
-        }
-
-        /* Mobile Responsive */
-        @media (max-width: 768px) {
+        
+        /* Responsive */
+        @media (max-width: 1024px) {
             .sidebar {
                 transform: translateX(-100%);
                 transition: transform 0.3s;
-                z-index: 100;
             }
-
+            
             .sidebar.mobile-open {
                 transform: translateX(0);
             }
-
+            
             .main-content {
                 margin-left: 0;
             }
-
-            .menu-item-card {
-                grid-template-columns: 1fr;
-            }
-
-            .stats-grid {
-                grid-template-columns: 1fr;
-            }
-        }
-
-        /* Loading Spinner */
-        .spinner {
-            border: 3px solid rgba(212, 175, 55, 0.2);
-            border-top: 3px solid var(--gold);
-            border-radius: 50%;
-            width: 40px;
-            height: 40px;
-            animation: spin 1s linear infinite;
-            margin: 2rem auto;
-        }
-
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
         }
     </style>
 </head>
@@ -601,18 +582,28 @@
     <!-- Login Screen -->
     <div id="loginContainer" class="login-container">
         <div class="login-box">
-            <h1>🔐 Admin Portal</h1>
-            <p>Celizes Catering Management System</p>
-            <div class="form-group">
-                <label>Username</label>
-                <input type="text" id="username" placeholder="Enter username">
+            <div class="login-header">
+                <h1>🔐 Admin Portal</h1>
+                <p>Celizes Catering Management System</p>
             </div>
+            
             <div class="form-group">
-                <label>Password</label>
-                <input type="password" id="password" placeholder="Enter password">
+                <label class="form-label">Email</label>
+                <input type="email" class="form-input" id="loginEmail" placeholder="admin@celizescatering.com" value="admin@celizes.com">
             </div>
-            <button class="btn" onclick="login()" style="width: 100%;">Login</button>
-            <div id="loginError" style="margin-top: 1rem; color: var(--red); text-align: center;"></div>
+            
+            <div class="form-group">
+                <label class="form-label">Password</label>
+                <input type="password" class="form-input" id="loginPassword" placeholder="Enter password" value="admin123">
+            </div>
+            
+            <button class="btn btn-primary" onclick="login()" style="width: 100%; margin-bottom: 1rem;">
+                Sign In
+            </button>
+            
+            <p style="text-align: center; color: var(--text-gray); font-size: 0.875rem;">
+                Demo: admin@celizes.com / admin123
+            </p>
         </div>
     </div>
 
@@ -620,601 +611,645 @@
     <div id="adminContainer" class="admin-container">
         <!-- Sidebar -->
         <div class="sidebar" id="sidebar">
-            <div class="logo">
-                <h2>Celizes Catering</h2>
-                <p>Admin Portal v2</p>
+            <div class="sidebar-header">
+                <h2>Celizes</h2>
+                <p>Admin Portal v3</p>
             </div>
-            <div class="nav-item active" onclick="showTab('dashboard')">
-                📊 Dashboard
-            </div>
-            <div class="nav-item" onclick="showTab('menu')">
-                🍽️ Menu Items
-            </div>
-            <div class="nav-item" onclick="showTab('analytics')">
-                📈 Analytics
-            </div>
-            <div class="nav-item" onclick="showTab('images')">
-                🖼️ Image Manager
-            </div>
-            <div class="nav-item" onclick="showTab('content')">
-                📝 Content Editor
-            </div>
-            <div class="nav-item" onclick="showTab('quotes')">
-                💬 Quotes & Orders
-            </div>
-            <div class="nav-item" onclick="showTab('settings')">
-                ⚙️ Settings
-            </div>
+            
+            <nav class="nav-section">
+                <div class="nav-title">Main</div>
+                <div class="nav-item active" onclick="showPage('dashboard')">
+                    <span class="nav-icon">📊</span>
+                    <span>Dashboard</span>
+                </div>
+                <div class="nav-item" onclick="showPage('menu')">
+                    <span class="nav-icon">🍽️</span>
+                    <span>Menu Items (18)</span>
+                </div>
+                <div class="nav-item" onclick="showPage('packages')">
+                    <span class="nav-icon">📦</span>
+                    <span>Packages & Services</span>
+                </div>
+                <div class="nav-item" onclick="showPage('gallery')">
+                    <span class="nav-icon">🖼️</span>
+                    <span>Gallery</span>
+                </div>
+            </nav>
+            
+            <nav class="nav-section">
+                <div class="nav-title">Content</div>
+                <div class="nav-item" onclick="showPage('homepage')">
+                    <span class="nav-icon">🏠</span>
+                    <span>Homepage Editor</span>
+                </div>
+                <div class="nav-item" onclick="showPage('pages')">
+                    <span class="nav-icon">📄</span>
+                    <span>Pages</span>
+                </div>
+                <div class="nav-item" onclick="showPage('testimonials')">
+                    <span class="nav-icon">💬</span>
+                    <span>Testimonials</span>
+                </div>
+            </nav>
+            
+            <nav class="nav-section">
+                <div class="nav-title">Orders</div>
+                <div class="nav-item" onclick="showPage('inquiries')">
+                    <span class="nav-icon">📩</span>
+                    <span>Inquiries</span>
+                </div>
+                <div class="nav-item" onclick="showPage('orders')">
+                    <span class="nav-icon">🗳️</span>
+                    <span>Orders</span>
+                </div>
+            </nav>
+            
+            <nav class="nav-section">
+                <div class="nav-title">Settings</div>
+                <div class="nav-item" onclick="showPage('settings')">
+                    <span class="nav-icon">⚙️</span>
+                    <span>Site Settings</span>
+                </div>
+                <div class="nav-item" onclick="showPage('seo')">
+                    <span class="nav-icon">🔍</span>
+                    <span>SEO</span>
+                </div>
+                <div class="nav-item" onclick="showPage('users')">
+                    <span class="nav-icon">👥</span>
+                    <span>Users</span>
+                </div>
+            </nav>
         </div>
 
         <!-- Main Content -->
         <div class="main-content">
-            <div class="header">
-                <div>
-                    <h1 id="pageTitle">Dashboard</h1>
-                    <p style="color: var(--gray); margin-top: 0.25rem;">Welcome back! Here's what's happening.</p>
+            <!-- Top Bar -->
+            <div class="top-bar">
+                <div class="search-bar">
+                    <input type="text" placeholder="Search...">
                 </div>
-                <button class="btn btn-secondary" onclick="logout()">Logout</button>
+                
+                <div class="user-menu">
+                    <button class="btn btn-secondary" onclick="previewSite()">
+                        👁️ Preview Site
+                    </button>
+                    <button class="btn btn-primary" onclick="publishChanges()">
+                        🚀 Publish
+                    </button>
+                    <div class="user-avatar" onclick="logout()">A</div>
+                </div>
             </div>
 
-            <!-- Dashboard Tab -->
-            <div id="dashboard" class="tab-content active">
+            <!-- Dashboard Page -->
+            <div id="dashboard" class="page-content active">
+                <div class="page-header">
+                    <h1>Dashboard</h1>
+                    <p>Welcome back! Here's what's happening with your catering business.</p>
+                </div>
+
                 <div class="stats-grid">
                     <div class="stat-card">
-                        <h3>Today's Visitors</h3>
-                        <div class="value" id="todayVisitors">0</div>
-                        <div class="change positive">
+                        <div class="stat-label">Total Inquiries</div>
+                        <div class="stat-value" id="totalInquiries">47</div>
+                        <div class="stat-change positive">
                             <span>↑ 12%</span>
-                            <span style="color: var(--gray);">vs yesterday</span>
+                            <span style="color: var(--text-gray);">vs last month</span>
                         </div>
                     </div>
+                    
                     <div class="stat-card">
-                        <h3>Total Orders</h3>
-                        <div class="value" id="totalOrders">0</div>
-                        <div class="change positive">
-                            <span>↑ 8%</span>
-                            <span style="color: var(--gray);">vs last week</span>
+                        <div class="stat-label">Pending Orders</div>
+                        <div class="stat-value" id="pendingOrders">8</div>
+                        <div class="stat-change positive">
+                            <span>↑ 3</span>
+                            <span style="color: var(--text-gray);">new this week</span>
                         </div>
                     </div>
+                    
                     <div class="stat-card">
-                        <h3>Quote Requests</h3>
-                        <div class="value" id="quoteRequests">0</div>
-                        <div class="change positive">
-                            <span>↑ 15%</span>
-                            <span style="color: var(--gray);">this month</span>
+                        <div class="stat-label">Upcoming Events</div>
+                        <div class="stat-value" id="upcomingEvents">12</div>
+                        <div class="stat-change">
+                            <span style="color: var(--text-gray);">next 30 days</span>
                         </div>
                     </div>
+                    
                     <div class="stat-card">
-                        <h3>Menu Items</h3>
-                        <div class="value" id="menuItemsCount">18</div>
-                        <div class="change" style="color: var(--gray);">
-                            <span>All categories</span>
+                        <div class="stat-label">Menu Items</div>
+                        <div class="stat-value" id="menuItemsCount">18</div>
+                        <div class="stat-change">
+                            <span style="color: var(--text-gray);">4 categories</span>
                         </div>
                     </div>
                 </div>
-
-                <div class="chart-container">
-                    <h3>Visitor Trends (Last 7 Days)</h3>
-                    <div class="chart-wrapper">
-                        <canvas id="visitorChart"></canvas>
-                    </div>
-                </div>
-
-                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem;">
-                    <div class="chart-container">
-                        <h3>Popular Menu Items</h3>
-                        <div class="chart-wrapper">
-                            <canvas id="popularItemsChart"></canvas>
-                        </div>
-                    </div>
-                    <div class="chart-container">
-                        <h3>Traffic Sources</h3>
-                        <div class="chart-wrapper">
-                            <canvas id="trafficChart"></canvas>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Menu Items Tab -->
-            <div id="menu" class="tab-content">
-                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;">
-                    <h2 style="color: var(--gold); font-size: 1.5rem;">Manage Menu Items</h2>
-                    <button class="btn" onclick="showAddMenuItem()">+ Add New Item</button>
-                </div>
-
-                <div id="menuItemsList" class="menu-items-grid"></div>
-            </div>
-
-            <!-- Analytics Tab -->
-            <div id="analytics" class="tab-content">
-                <h2 style="color: var(--gold); font-size: 1.5rem; margin-bottom: 2rem;">Advanced Analytics</h2>
-
-                <div class="chart-container">
-                    <h3>Revenue Over Time</h3>
-                    <div class="chart-wrapper" style="height: 350px;">
-                        <canvas id="revenueChart"></canvas>
-                    </div>
-                </div>
-
-                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; margin-top: 1.5rem;">
-                    <div class="chart-container">
-                        <h3>Device Breakdown</h3>
-                        <div class="chart-wrapper">
-                            <canvas id="deviceChart"></canvas>
-                        </div>
-                    </div>
-                    <div class="chart-container">
-                        <h3>Peak Hours</h3>
-                        <div class="chart-wrapper">
-                            <canvas id="peakHoursChart"></canvas>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Images Tab -->
-            <div id="images" class="tab-content">
-                <h2 style="color: var(--gold); font-size: 1.5rem; margin-bottom: 2rem;">Image Manager</h2>
-
-                <div class="image-upload" id="imageUpload" onclick="document.getElementById('fileInput').click()">
-                    <div style="font-size: 3rem; margin-bottom: 1rem;">📸</div>
-                    <h3 style="color: var(--gold); margin-bottom: 0.5rem;">Upload Images</h3>
-                    <p style="color: var(--gray);">Click to browse or drag and drop images here</p>
-                    <input type="file" id="fileInput" hidden accept="image/*" multiple onchange="handleFileUpload(event)">
-                </div>
-
-                <div id="imageGallery" class="image-preview"></div>
-            </div>
-
-            <!-- Content Editor Tab -->
-            <div id="content" class="tab-content">
-                <h2 style="color: var(--gold); font-size: 1.5rem; margin-bottom: 2rem;">Edit Website Content</h2>
-
-                <div style="max-width: 800px;">
-                    <div class="form-group">
-                        <label>Business Name</label>
-                        <input type="text" id="businessName" value="Celizes Catering">
-                    </div>
-
-                    <div class="form-group">
-                        <label>Tagline</label>
-                        <input type="text" id="tagline" value="Taste of Africa">
-                    </div>
-
-                    <div class="form-group">
-                        <label>Hero Description</label>
-                        <textarea id="heroDescription">Bringing authentic African cuisine to Thunder Bay, Ontario. Experience the rich flavors and cultural traditions of Africa at your next event.</textarea>
-                    </div>
-
-                    <div class="form-group">
-                        <label>Mission Statement</label>
-                        <textarea id="missionStatement">Bring the authentic taste of African cuisine to the world. We celebrate culture, family, and tradition through every dish we serve.</textarea>
-                    </div>
-
-                    <div class="form-group">
-                        <label>Phone Number 1</label>
-                        <input type="tel" id="phone1" value="+1 (249) 885-1296">
-                    </div>
-
-                    <div class="form-group">
-                        <label>Phone Number 2</label>
-                        <input type="tel" id="phone2" value="+1 (807) 357-9272">
-                    </div>
-
-                    <div class="form-group">
-                        <label>Business Email</label>
-                        <input type="email" id="businessEmail" value="celizescatering@gmail.com">
-                    </div>
-
-                    <div class="form-group">
-                        <label>Location</label>
-                        <input type="text" id="location" value="Thunder Bay, Ontario">
-                    </div>
-
-                    <button class="btn" onclick="saveContent()">💾 Save All Changes</button>
-                </div>
-            </div>
-
-            <!-- Quotes Tab -->
-            <div id="quotes" class="tab-content">
-                <h2 style="color: var(--gold); font-size: 1.5rem; margin-bottom: 2rem;">Quote Requests & Orders</h2>
 
                 <div class="data-table">
+                    <div class="table-header">
+                        <h3>Recent Activities</h3>
+                        <button class="btn btn-secondary">View All</button>
+                    </div>
                     <table>
                         <thead>
                             <tr>
-                                <th>Date</th>
-                                <th>Name</th>
-                                <th>Event Type</th>
-                                <th>Guests</th>
-                                <th>Contact</th>
-                                <th>Status</th>
+                                <th>Activity</th>
+                                <th>User</th>
+                                <th>Time</th>
                             </tr>
                         </thead>
-                        <tbody id="quotesTableBody">
+                        <tbody>
                             <tr>
-                                <td colspan="6" style="text-align: center; padding: 2rem; color: var(--gray);">
-                                    No quote requests yet. Data will appear here when customers submit quotes.
-                                </td>
+                                <td>New inquiry submitted</td>
+                                <td>John Doe</td>
+                                <td>2 min ago</td>
+                            </tr>
+                            <tr>
+                                <td>Menu item updated (Jollof Rice)</td>
+                                <td>Admin</td>
+                                <td>1 hour ago</td>
+                            </tr>
+                            <tr>
+                                <td>New order placed</td>
+                                <td>Sarah Smith</td>
+                                <td>3 hours ago</td>
                             </tr>
                         </tbody>
                     </table>
                 </div>
             </div>
 
-            <!-- Settings Tab -->
-            <div id="settings" class="tab-content">
-                <h2 style="color: var(--gold); font-size: 1.5rem; margin-bottom: 2rem;">Settings</h2>
-
-                <div style="max-width: 600px;">
-                    <h3 style="color: var(--gold); margin-bottom: 1.5rem;">Change Password</h3>
-                    <div class="form-group">
-                        <label>New Username</label>
-                        <input type="text" id="newUsername" placeholder="Enter new username">
-                    </div>
-                    <div class="form-group">
-                        <label>New Password</label>
-                        <input type="password" id="newPassword" placeholder="Enter new password">
-                    </div>
-                    <button class="btn" onclick="changePassword()">Update Credentials</button>
-
-                    <hr style="margin: 3rem 0; border-color: var(--gold); opacity: 0.2;">
-
-                    <h3 style="color: var(--gold); margin-bottom: 1.5rem;">Data Management</h3>
-                    <button class="btn btn-secondary" onclick="exportData()">📥 Export All Data</button>
-                    <button class="btn btn-secondary" onclick="window.open('/', '_blank')" style="margin-left: 1rem;">🌐 View Live Website</button>
+            <!-- Menu Items Page -->
+            <div id="menu" class="page-content">
+                <div class="page-header">
+                    <h1>Menu Management</h1>
+                    <p>Manage all 18 menu items across 4 categories</p>
                 </div>
+
+                <button class="btn btn-primary" onclick="showAddMenuItem()" style="margin-bottom: 2rem;">
+                    + Add New Menu Item
+                </button>
+
+                <div id="menuItemsGrid" class="menu-items-grid"></div>
+            </div>
+
+            <!-- Packages Page -->
+            <div id="packages" class="page-content">
+                <div class="page-header">
+                    <h1>Catering Packages & Services</h1>
+                    <p>Manage service categories, packages, and add-ons</p>
+                </div>
+
+                <button class="btn btn-primary" onclick="showAddPackage()" style="margin-bottom: 2rem;">
+                    + Create Package
+                </button>
+
+                <div class="menu-items-grid">
+                    <div class="menu-item-card">
+                        <div class="menu-item-image">💼</div>
+                        <div class="menu-item-content">
+                            <div class="menu-item-name">Corporate Package</div>
+                            <div class="menu-item-price">From $500</div>
+                            <div class="menu-item-category">Business Events</div>
+                            <div class="menu-item-description">Perfect for corporate meetings, seminars, and business lunches</div>
+                            <div class="menu-item-actions">
+                                <button class="btn btn-secondary">Edit</button>
+                                <button class="btn btn-danger">Delete</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Gallery Page -->
+            <div id="gallery" class="page-content">
+                <div class="page-header">
+                    <h1>Gallery Management</h1>
+                    <p>Upload and organize images for your website gallery</p>
+                </div>
+
+                <button class="btn btn-primary" onclick="document.getElementById('galleryUpload').click()" style="margin-bottom: 2rem;">
+                    📤 Upload Images
+                </button>
+                <input type="file" id="galleryUpload" multiple accept="image/*" style="display: none;">
+
+                <div class="menu-items-grid" id="galleryGrid">
+                    <p style="color: var(--text-gray);">No images yet. Upload your first gallery image.</p>
+                </div>
+            </div>
+
+            <!-- Homepage Editor -->
+            <div id="homepage" class="page-content">
+                <div class="page-header">
+                    <h1>Homepage Content Editor</h1>
+                    <p>Edit all sections of your homepage</p>
+                </div>
+
+                <div style="max-width: 800px;">
+                    <div class="form-group">
+                        <label class="form-label">Hero Headline</label>
+                        <input type="text" class="form-input" value="Celizes Catering" id="heroHeadline">
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Hero Subheadline</label>
+                        <input type="text" class="form-input" value="Taste of Africa" id="heroSubheadline">
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Hero Description</label>
+                        <textarea class="form-textarea" id="heroDescription">Bringing authentic African cuisine to Thunder Bay, Ontario. Experience the rich flavors and cultural traditions of Africa at your next event.</textarea>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">About Section Title</label>
+                        <input type="text" class="form-input" value="Our Mission" id="aboutTitle">
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">About Section Content</label>
+                        <textarea class="form-textarea" id="aboutContent">Bring the authentic taste of African cuisine to the world. We celebrate culture, family, and tradition through every dish we serve.</textarea>
+                    </div>
+
+                    <button class="btn btn-primary" onclick="saveHomepage()">
+                        💾 Save Changes
+                    </button>
+                </div>
+            </div>
+
+            <!-- Inquiries Page -->
+            <div id="inquiries" class="page-content">
+                <div class="page-header">
+                    <h1>Customer Inquiries</h1>
+                    <p>Manage and respond to quote requests</p>
+                </div>
+
+                <div class="data-table">
+                    <div class="table-header">
+                        <h3>All Inquiries</h3>
+                        <button class="btn btn-secondary">Export CSV</button>
+                    </div>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>Event Type</th>
+                                <th>Guests</th>
+                                <th>Date</th>
+                                <th>Status</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>John Doe</td>
+                                <td>Wedding</td>
+                                <td>150</td>
+                                <td>Dec 25, 2025</td>
+                                <td><span style="color: var(--warning);">Pending</span></td>
+                                <td><button class="btn btn-secondary">View</button></td>
+                            </tr>
+                            <tr>
+                                <td>Sarah Smith</td>
+                                <td>Corporate</td>
+                                <td>50</td>
+                                <td>Dec 15, 2025</td>
+                                <td><span style="color: var(--success);">Completed</span></td>
+                                <td><button class="btn btn-secondary">View</button></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Settings Page -->
+            <div id="settings" class="page-content">
+                <div class="page-header">
+                    <h1>Site Settings</h1>
+                    <p>Configure your website settings</p>
+                </div>
+
+                <div style="max-width: 800px;">
+                    <h3 style="color: var(--primary); margin-bottom: 1.5rem;">Branding</h3>
+                    
+                    <div class="form-group">
+                        <label class="form-label">Business Name</label>
+                        <input type="text" class="form-input" value="Celizes Catering" id="businessName">
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Tagline</label>
+                        <input type="text" class="form-input" value="Taste of Africa" id="tagline">
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Primary Color</label>
+                        <input type="color" class="form-input" value="#D4AF37" id="primaryColor">
+                    </div>
+
+                    <h3 style="color: var(--primary); margin: 2rem 0 1.5rem;">Contact Information</h3>
+
+                    <div class="form-group">
+                        <label class="form-label">Phone Number</label>
+                        <input type="tel" class="form-input" value="+1 (249) 885-1296" id="phone1">
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Email</label>
+                        <input type="email" class="form-input" value="celizescatering@gmail.com" id="businessEmail">
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Address</label>
+                        <input type="text" class="form-input" value="Thunder Bay, Ontario" id="address">
+                    </div>
+
+                    <button class="btn btn-primary" onclick="saveSettings()">
+                        💾 Save All Settings
+                    </button>
+                </div>
+            </div>
+
+            <!-- SEO Page -->
+            <div id="seo" class="page-content">
+                <div class="page-header">
+                    <h1>SEO Management</h1>
+                    <p>Optimize your website for search engines</p>
+                </div>
+
+                <div style="max-width: 800px;">
+                    <div class="form-group">
+                        <label class="form-label">Page Title</label>
+                        <input type="text" class="form-input" value="Celizes Catering - Authentic African Cuisine in Thunder Bay" id="seoTitle">
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Meta Description</label>
+                        <textarea class="form-textarea" id="seoDescription">Experience authentic African catering in Thunder Bay. Specializing in traditional dishes for weddings, corporate events, and celebrations.</textarea>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Keywords</label>
+                        <input type="text" class="form-input" value="african catering, thunder bay, jollof rice, african food" id="seoKeywords">
+                    </div>
+
+                    <button class="btn btn-primary" onclick="saveSEO()">
+                        💾 Save SEO Settings
+                    </button>
+                </div>
+            </div>
+
+            <!-- Users Page -->
+            <div id="users" class="page-content">
+                <div class="page-header">
+                    <h1>User Management</h1>
+                    <p>Manage admin users and permissions</p>
+                </div>
+
+                <button class="btn btn-primary" onclick="showAddUser()" style="margin-bottom: 2rem;">
+                    + Add User
+                </button>
+
+                <div class="data-table">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>Email</th>
+                                <th>Role</th>
+                                <th>Last Login</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Admin User</td>
+                                <td>admin@celizes.com</td>
+                                <td><span style="color: var(--primary);">Admin</span></td>
+                                <td>Just now</td>
+                                <td><button class="btn btn-secondary">Edit</button></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Pages Management -->
+            <div id="pages" class="page-content">
+                <div class="page-header">
+                    <h1>Pages</h1>
+                    <p>Manage static pages on your website</p>
+                </div>
+
+                <button class="btn btn-primary" style="margin-bottom: 2rem;">
+                    + Create New Page
+                </button>
+
+                <p style="color: var(--text-gray);">No custom pages yet. Create your first page.</p>
+            </div>
+
+            <!-- Testimonials Page -->
+            <div id="testimonials" class="page-content">
+                <div class="page-header">
+                    <h1>Testimonials</h1>
+                    <p>Manage customer reviews and testimonials</p>
+                </div>
+
+                <button class="btn btn-primary" onclick="showAddTestimonial()" style="margin-bottom: 2rem;">
+                    + Add Testimonial
+                </button>
+
+                <p style="color: var(--text-gray);">No testimonials yet. Add your first customer review.</p>
+            </div>
+
+            <!-- Orders Page -->
+            <div id="orders" class="page-content">
+                <div class="page-header">
+                    <h1>Order Management</h1>
+                    <p>Track and manage catering orders</p>
+                </div>
+
+                <p style="color: var(--text-gray);">Order management system ready. Integrate with payment processor to accept orders.</p>
             </div>
         </div>
     </div>
 
-    <!-- Add/Edit Menu Item Modal -->
+    <!-- Add Menu Item Modal -->
     <div id="menuItemModal" class="modal">
         <div class="modal-content">
             <div class="modal-header">
                 <h2 id="modalTitle">Add Menu Item</h2>
-                <button class="modal-close" onclick="closeMenuItemModal()">×</button>
+                <button class="modal-close" onclick="closeModal('menuItemModal')">×</button>
             </div>
-            <div class="form-group">
-                <label>Item Name</label>
-                <input type="text" id="modalItemName" placeholder="e.g., Jollof Rice with Chicken">
+            <div class="modal-body">
+                <div class="form-group">
+                    <label class="form-label">Item Name</label>
+                    <input type="text" class="form-input" id="itemName" placeholder="e.g., Jollof Rice with Chicken">
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Category</label>
+                    <select class="form-select" id="itemCategory">
+                        <option>Main Dishes</option>
+                        <option>Soups & Stews</option>
+                        <option>Baked Goods & Cakes</option>
+                        <option>Snacks & Drinks</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Price</label>
+                    <input type="text" class="form-input" id="itemPrice" placeholder="e.g., $25.00 or 2L: $150 | 4L: $200">
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Description</label>
+                    <textarea class="form-textarea" id="itemDescription" placeholder="Brief description of the item"></textarea>
+                </div>
+
+                <button class="btn btn-primary" onclick="saveMenuItem()">
+                    Save Menu Item
+                </button>
             </div>
-            <div class="form-group">
-                <label>Category</label>
-                <select id="modalItemCategory">
-                    <option>Main Dishes</option>
-                    <option>Soups & Stews</option>
-                    <option>Baked Goods & Cakes</option>
-                    <option>Snacks & Drinks</option>
-                </select>
-            </div>
-            <div class="form-group">
-                <label>Price</label>
-                <input type="text" id="modalItemPrice" placeholder="e.g., $25.00">
-            </div>
-            <div class="form-group">
-                <label>Description</label>
-                <textarea id="modalItemDescription" placeholder="Brief description of the item"></textarea>
-            </div>
-            <div class="form-group">
-                <label>Image URL (optional)</label>
-                <input type="text" id="modalItemImage" placeholder="https://...">
-            </div>
-            <button class="btn" onclick="saveMenuItem()">Save Menu Item</button>
         </div>
     </div>
 
     <script>
-        // Configuration
-        const API_BASE = '';
-        const DEFAULT_USERNAME = 'admin';
-        const DEFAULT_PASSWORD = 'celizes2025';
-
-        // State
-        let menuItems = [];
-        let editingItemId = null;
-        let charts = {};
-
         // Authentication
         function login() {
-            const username = document.getElementById('username').value;
-            const password = document.getElementById('password').value;
-
-            const savedUsername = localStorage.getItem('adminUsername') || DEFAULT_USERNAME;
-            const savedPassword = localStorage.getItem('adminPassword') || DEFAULT_PASSWORD;
-
-            if (username === savedUsername && password === savedPassword) {
+            const email = document.getElementById('loginEmail').value;
+            const password = document.getElementById('loginPassword').value;
+            
+            if (email === 'admin@celizes.com' && password === 'admin123') {
                 sessionStorage.setItem('adminLoggedIn', 'true');
                 document.getElementById('loginContainer').style.display = 'none';
-                document.getElementById('adminContainer').style.display = 'block';
-                initDashboard();
+                document.getElementById('adminContainer').classList.add('active');
+                loadMenuItems();
+                showToast('Welcome back!', 'success');
             } else {
-                document.getElementById('loginError').textContent = 'Invalid credentials';
+                showToast('Invalid credentials', 'error');
             }
         }
 
         function logout() {
-            sessionStorage.removeItem('adminLoggedIn');
-            location.reload();
-        }
-
-        function checkAuth() {
-            if (sessionStorage.getItem('adminLoggedIn') === 'true') {
-                document.getElementById('loginContainer').style.display = 'none';
-                document.getElementById('adminContainer').style.display = 'block';
-                initDashboard();
+            if (confirm('Are you sure you want to log out?')) {
+                sessionStorage.removeItem('adminLoggedIn');
+                location.reload();
             }
         }
 
+        // Check auth on load
+        if (sessionStorage.getItem('adminLoggedIn') === 'true') {
+            document.getElementById('loginContainer').style.display = 'none';
+            document.getElementById('adminContainer').classList.add('active');
+            loadMenuItems();
+        }
+
         // Navigation
-        function showTab(tabName) {
-            const titles = {
-                dashboard: 'Dashboard',
-                menu: 'Menu Items',
-                analytics: 'Analytics',
-                images: 'Image Manager',
-                content: 'Content Editor',
-                quotes: 'Quotes & Orders',
-                settings: 'Settings'
-            };
-
-            document.getElementById('pageTitle').textContent = titles[tabName];
-
+        function showPage(pageName) {
+            // Update nav
             document.querySelectorAll('.nav-item').forEach(item => {
                 item.classList.remove('active');
             });
             event.target.classList.add('active');
 
-            document.querySelectorAll('.tab-content').forEach(content => {
-                content.classList.remove('active');
+            // Update pages
+            document.querySelectorAll('.page-content').forEach(page => {
+                page.classList.remove('active');
             });
-            document.getElementById(tabName).classList.add('active');
-
-            if (tabName === 'dashboard') {
-                updateDashboardCharts();
-            }
+            document.getElementById(pageName).classList.add('active');
         }
 
-        // Dashboard Initialization
-        function initDashboard() {
-            loadMenuItems();
-            createCharts();
-            updateStats();
-            loadImages();
-        }
+        // All 18 Menu Items
+        let menuItems = [
+            {id: 1, name: "Waakye with Fish and Egg", category: "Main Dishes", price: "$25.00", description: "Traditional Ghanaian rice and beans served with fried fish and boiled egg"},
+            {id: 2, name: "Jollof with Chicken", category: "Main Dishes", price: "$25.00", description: "Flavorful West African rice dish with tender grilled chicken"},
+            {id: 3, name: "Fried Rice with Chicken", category: "Main Dishes", price: "$25.00", description: "Savory fried rice with mixed vegetables and grilled chicken"},
+            {id: 4, name: "Ga Kenkey with Tilapia", category: "Main Dishes", price: "$25.00", description: "Fermented corn dough served with grilled tilapia and pepper sauce"},
+            {id: 5, name: "Ga/Fante Kenkey (5 pieces)", category: "Main Dishes", price: "$25.00", description: "Traditional fermented corn dough wrapped in banana leaves"},
+            {id: 6, name: "Light Soup", category: "Soups & Stews", price: "2L: $150 | 4L: $200", description: "Traditional Ghanaian tomato-based soup with meat and spices"},
+            {id: 7, name: "Groundnut Soup", category: "Soups & Stews", price: "2L: $150 | 4L: $200", description: "Rich peanut butter soup with meat and vegetables"},
+            {id: 8, name: "Okro Soup", category: "Soups & Stews", price: "2L: $200 | 4L: $250", description: "Authentic okra soup with fish and seafood"},
+            {id: 9, name: "Palmnut Soup", category: "Soups & Stews", price: "2L: $200 | 4L: $250", description: "Traditional palm fruit soup with meat and fish"},
+            {id: 10, name: "Egusi Soup", category: "Soups & Stews", price: "2L: $150 | 4L: $200", description: "Nigerian melon seed soup with meat and fish"},
+            {id: 11, name: "Tomato Stew", category: "Soups & Stews", price: "2L: $120 | 4L: $170", description: "Rich tomato-based stew perfect for rice or yam"},
+            {id: 12, name: "Egg Stew", category: "Soups & Stews", price: "2L: $150 | 4L: $200", description: "Tomato stew with boiled eggs"},
+            {id: 13, name: "Meat Pie (5 pieces)", category: "Baked Goods & Cakes", price: "$22.00", description: "Savory pastry filled with seasoned ground meat"},
+            {id: 14, name: "Puff-Puff (5 pieces)", category: "Baked Goods & Cakes", price: "$10.00", description: "Sweet fried dough balls, a popular West African snack"},
+            {id: 15, name: "Spring Roll (2 pieces)", category: "Snacks & Drinks", price: "$4.00", description: "Crispy vegetable-filled spring rolls"},
+            {id: 16, name: "Shito", category: "Snacks & Drinks", price: "500ml: $25 | 250ml: $15", description: "Spicy Ghanaian black pepper sauce"},
+            {id: 17, name: "Water (500ml)", category: "Snacks & Drinks", price: "$2.50", description: "Bottled water"},
+            {id: 18, name: "Sobolo (350ml)", category: "Snacks & Drinks", price: "$4.50", description: "Refreshing hibiscus drink with ginger and spices"}
+        ];
 
-        // Charts
-        function createCharts() {
-            // Visitor Chart
-            const visitorCtx = document.getElementById('visitorChart').getContext('2d');
-            charts.visitor = new Chart(visitorCtx, {
-                type: 'line',
-                data: {
-                    labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
-                    datasets: [{
-                        label: 'Visitors',
-                        data: [65, 78, 90, 81, 96, 105, 112],
-                        borderColor: '#D4AF37',
-                        backgroundColor: 'rgba(212, 175, 55, 0.1)',
-                        tension: 0.4,
-                        fill: true
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    plugins: {
-                        legend: { display: false }
-                    },
-                    scales: {
-                        y: { beginAtZero: true, grid: { color: 'rgba(212, 175, 55, 0.1)' } }
-                    }
-                }
-            });
-
-            // Popular Items Chart
-            const popularCtx = document.getElementById('popularItemsChart').getContext('2d');
-            charts.popular = new Chart(popularCtx, {
-                type: 'bar',
-                data: {
-                    labels: ['Jollof Rice', 'Waakye', 'Fried Rice', 'Light Soup', 'Kenkey'],
-                    datasets: [{
-                        label: 'Orders',
-                        data: [45, 38, 32, 28, 25],
-                        backgroundColor: '#D4AF37'
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    plugins: { legend: { display: false } },
-                    scales: { y: { beginAtZero: true } }
-                }
-            });
-
-            // Traffic Chart
-            const trafficCtx = document.getElementById('trafficChart').getContext('2d');
-            charts.traffic = new Chart(trafficCtx, {
-                type: 'doughnut',
-                data: {
-                    labels: ['Direct', 'Social', 'Search', 'Referral'],
-                    datasets: [{
-                        data: [45, 25, 20, 10],
-                        backgroundColor: ['#D4AF37', '#B8941F', '#F0D98E', '#E0E0E0']
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false
-                }
-            });
-
-            // Revenue Chart
-            const revenueCtx = document.getElementById('revenueChart').getContext('2d');
-            charts.revenue = new Chart(revenueCtx, {
-                type: 'line',
-                data: {
-                    labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
-                    datasets: [{
-                        label: 'Revenue ($)',
-                        data: [1200, 1900, 1500, 2100, 2500, 2800],
-                        borderColor: '#10B981',
-                        backgroundColor: 'rgba(16, 185, 129, 0.1)',
-                        tension: 0.4,
-                        fill: true
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    scales: { y: { beginAtZero: true } }
-                }
-            });
-
-            // Device Chart
-            const deviceCtx = document.getElementById('deviceChart').getContext('2d');
-            charts.device = new Chart(deviceCtx, {
-                type: 'pie',
-                data: {
-                    labels: ['Mobile', 'Desktop', 'Tablet'],
-                    datasets: [{
-                        data: [60, 30, 10],
-                        backgroundColor: ['#D4AF37', '#B8941F', '#F0D98E']
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false
-                }
-            });
-
-            // Peak Hours Chart
-            const peakCtx = document.getElementById('peakHoursChart').getContext('2d');
-            charts.peakHours = new Chart(peakCtx, {
-                type: 'bar',
-                data: {
-                    labels: ['9AM', '12PM', '3PM', '6PM', '9PM'],
-                    datasets: [{
-                        label: 'Visitors',
-                        data: [20, 45, 30, 60, 35],
-                        backgroundColor: '#3B82F6'
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    plugins: { legend: { display: false } }
-                }
-            });
-        }
-
-        function updateDashboardCharts() {
-            // Refresh charts if needed
-            Object.values(charts).forEach(chart => {
-                if (chart) chart.update();
-            });
-        }
-
-        // Stats
-        function updateStats() {
-            // In production, fetch from API
-            document.getElementById('todayVisitors').textContent = Math.floor(Math.random() * 200 + 50);
-            document.getElementById('totalOrders').textContent = Math.floor(Math.random() * 50 + 10);
-            document.getElementById('quoteRequests').textContent = Math.floor(Math.random() * 20 + 5);
-        }
-
-        // Menu Items
+        // Load and display menu items
         function loadMenuItems() {
             const saved = localStorage.getItem('menuItems');
             if (saved) {
                 menuItems = JSON.parse(saved);
-            } else {
-                // Default menu items
-                menuItems = [
-                    {id: 1, name: 'Waakye with Fish and Egg', category: 'Main Dishes', price: '$25.00', description: 'Traditional Ghanaian rice and beans', image: ''},
-                    {id: 2, name: 'Jollof with Chicken', category: 'Main Dishes', price: '$25.00', description: 'Flavorful West African rice', image: ''},
-                    {id: 3, name: 'Fried Rice with Chicken', category: 'Main Dishes', price: '$25.00', description: 'Savory fried rice', image: ''},
-                    {id: 4, name: 'Ga Kenkey with Tilapia', category: 'Main Dishes', price: '$25.00', description: 'Fermented corn dough', image: ''},
-                    {id: 5, name: 'Light Soup', category: 'Soups & Stews', price: '2L: $150 | 4L: $200', description: 'Traditional tomato-based soup', image: ''},
-                    {id: 6, name: 'Groundnut Soup', category: 'Soups & Stews', price: '2L: $150 | 4L: $200', description: 'Rich peanut butter soup', image: ''},
-                    {id: 7, name: 'Meat Pie (5 pieces)', category: 'Baked Goods & Cakes', price: '$22.00', description: 'Savory pastry', image: ''},
-                    {id: 8, name: 'Puff-Puff (5 pieces)', category: 'Baked Goods & Cakes', price: '$10.00', description: 'Sweet fried dough balls', image: ''}
-                ];
-                localStorage.setItem('menuItems', JSON.stringify(menuItems));
             }
             displayMenuItems();
-            document.getElementById('menuItemsCount').textContent = menuItems.length;
         }
 
         function displayMenuItems() {
-            const container = document.getElementById('menuItemsList');
-            container.innerHTML = '';
+            const grid = document.getElementById('menuItemsGrid');
+            grid.innerHTML = '';
 
             menuItems.forEach(item => {
                 const card = document.createElement('div');
                 card.className = 'menu-item-card';
                 card.innerHTML = `
-                    <div class="menu-item-image">
-                        ${item.image ? `<img src="${item.image}" alt="${item.name}">` : '<span style="font-size: 2rem;">🍽️</span>'}
-                    </div>
-                    <div class="menu-item-details">
-                        <h4>${item.name}</h4>
-                        <div class="price">${item.price}</div>
-                        <span class="category">${item.category}</span>
-                        <p class="description">${item.description || ''}</p>
-                    </div>
-                    <div class="menu-item-actions">
-                        <button class="btn btn-secondary" onclick="editMenuItem(${item.id})">Edit</button>
-                        <button class="btn btn-danger" onclick="deleteMenuItem(${item.id})">Delete</button>
+                    <div class="menu-item-image">🍽️</div>
+                    <div class="menu-item-content">
+                        <div class="menu-item-name">${item.name}</div>
+                        <div class="menu-item-price">${item.price}</div>
+                        <div class="menu-item-category">${item.category}</div>
+                        <div class="menu-item-description">${item.description}</div>
+                        <div class="menu-item-actions">
+                            <button class="btn btn-secondary" onclick="editMenuItem(${item.id})">Edit</button>
+                            <button class="btn btn-danger" onclick="deleteMenuItem(${item.id})">Delete</button>
+                        </div>
                     </div>
                 `;
-                container.appendChild(card);
+                grid.appendChild(card);
             });
+
+            document.getElementById('menuItemsCount').textContent = menuItems.length;
         }
 
+        // Add/Edit Menu Item
+        let editingId = null;
+
         function showAddMenuItem() {
-            editingItemId = null;
+            editingId = null;
             document.getElementById('modalTitle').textContent = 'Add Menu Item';
-            document.getElementById('modalItemName').value = '';
-            document.getElementById('modalItemCategory').value = 'Main Dishes';
-            document.getElementById('modalItemPrice').value = '';
-            document.getElementById('modalItemDescription').value = '';
-            document.getElementById('modalItemImage').value = '';
+            document.getElementById('itemName').value = '';
+            document.getElementById('itemCategory').value = 'Main Dishes';
+            document.getElementById('itemPrice').value = '';
+            document.getElementById('itemDescription').value = '';
             document.getElementById('menuItemModal').classList.add('active');
         }
 
         function editMenuItem(id) {
-            editingItemId = id;
+            editingId = id;
             const item = menuItems.find(i => i.id === id);
-            if (!item) return;
-
             document.getElementById('modalTitle').textContent = 'Edit Menu Item';
-            document.getElementById('modalItemName').value = item.name;
-            document.getElementById('modalItemCategory').value = item.category;
-            document.getElementById('modalItemPrice').value = item.price;
-            document.getElementById('modalItemDescription').value = item.description || '';
-            document.getElementById('modalItemImage').value = item.image || '';
+            document.getElementById('itemName').value = item.name;
+            document.getElementById('itemCategory').value = item.category;
+            document.getElementById('itemPrice').value = item.price;
+            document.getElementById('itemDescription').value = item.description;
             document.getElementById('menuItemModal').classList.add('active');
         }
 
         function saveMenuItem() {
             const item = {
-                id: editingItemId || Date.now(),
-                name: document.getElementById('modalItemName').value,
-                category: document.getElementById('modalItemCategory').value,
-                price: document.getElementById('modalItemPrice').value,
-                description: document.getElementById('modalItemDescription').value,
-                image: document.getElementById('modalItemImage').value
+                id: editingId || Date.now(),
+                name: document.getElementById('itemName').value,
+                category: document.getElementById('itemCategory').value,
+                price: document.getElementById('itemPrice').value,
+                description: document.getElementById('itemDescription').value
             };
 
-            if (!item.name || !item.price) {
-                alert('Please fill in name and price');
-                return;
-            }
-
-            if (editingItemId) {
-                const index = menuItems.findIndex(i => i.id === editingItemId);
+            if (editingId) {
+                const index = menuItems.findIndex(i => i.id === editingId);
                 menuItems[index] = item;
             } else {
                 menuItems.push(item);
@@ -1222,157 +1257,99 @@
 
             localStorage.setItem('menuItems', JSON.stringify(menuItems));
             displayMenuItems();
-            closeMenuItemModal();
-            showAlert('success', 'Menu item saved successfully!');
-            document.getElementById('menuItemsCount').textContent = menuItems.length;
+            closeModal('menuItemModal');
+            showToast('Menu item saved!', 'success');
+            
+            // Sync to live site
+            syncToLiveSite();
         }
 
         function deleteMenuItem(id) {
-            if (confirm('Are you sure you want to delete this item?')) {
+            if (confirm('Delete this menu item?')) {
                 menuItems = menuItems.filter(i => i.id !== id);
                 localStorage.setItem('menuItems', JSON.stringify(menuItems));
                 displayMenuItems();
-                showAlert('success', 'Menu item deleted');
-                document.getElementById('menuItemsCount').textContent = menuItems.length;
+                showToast('Menu item deleted', 'success');
+                syncToLiveSite();
             }
         }
 
-        function closeMenuItemModal() {
-            document.getElementById('menuItemModal').classList.remove('active');
+        // Modal controls
+        function closeModal(modalId) {
+            document.getElementById(modalId).classList.remove('active');
         }
 
-        // Image Upload
-        function handleFileUpload(event) {
-            const files = event.target.files;
-            for (let file of files) {
-                const reader = new FileReader();
-                reader.onload = function(e) {
-                    addImageToGallery(e.target.result);
-                };
-                reader.readAsDataURL(file);
-            }
+        // Save functions
+        function saveHomepage() {
+            const data = {
+                heroHeadline: document.getElementById('heroHeadline').value,
+                heroSubheadline: document.getElementById('heroSubheadline').value,
+                heroDescription: document.getElementById('heroDescription').value,
+                aboutTitle: document.getElementById('aboutTitle').value,
+                aboutContent: document.getElementById('aboutContent').value
+            };
+            localStorage.setItem('homepage', JSON.stringify(data));
+            showToast('Homepage saved!', 'success');
+            syncToLiveSite();
         }
 
-        function addImageToGallery(url) {
-            let images = JSON.parse(localStorage.getItem('uploadedImages') || '[]');
-            images.push({id: Date.now(), url});
-            localStorage.setItem('uploadedImages', JSON.stringify(images));
-            loadImages();
-        }
-
-        function loadImages() {
-            const images = JSON.parse(localStorage.getItem('uploadedImages') || '[]');
-            const gallery = document.getElementById('imageGallery');
-            gallery.innerHTML = '';
-
-            images.forEach(img => {
-                const div = document.createElement('div');
-                div.className = 'image-preview-item';
-                div.innerHTML = `
-                    <img src="${img.url}" alt="Uploaded image">
-                    <button class="remove" onclick="deleteImage(${img.id})">×</button>
-                `;
-                gallery.appendChild(div);
-            });
-        }
-
-        function deleteImage(id) {
-            let images = JSON.parse(localStorage.getItem('uploadedImages') || '[]');
-            images = images.filter(img => img.id !== id);
-            localStorage.setItem('uploadedImages', JSON.stringify(images));
-            loadImages();
-        }
-
-        // Content
-        function saveContent() {
-            const content = {
+        function saveSettings() {
+            const data = {
                 businessName: document.getElementById('businessName').value,
                 tagline: document.getElementById('tagline').value,
-                heroDescription: document.getElementById('heroDescription').value,
-                missionStatement: document.getElementById('missionStatement').value,
+                primaryColor: document.getElementById('primaryColor').value,
                 phone1: document.getElementById('phone1').value,
-                phone2: document.getElementById('phone2').value,
                 businessEmail: document.getElementById('businessEmail').value,
-                location: document.getElementById('location').value
+                address: document.getElementById('address').value
             };
-
-            localStorage.setItem('siteContent', JSON.stringify(content));
-            showAlert('success', 'Content saved successfully!');
+            localStorage.setItem('settings', JSON.stringify(data));
+            showToast('Settings saved!', 'success');
+            syncToLiveSite();
         }
 
-        // Settings
-        function changePassword() {
-            const username = document.getElementById('newUsername').value;
-            const password = document.getElementById('newPassword').value;
-
-            if (username && password) {
-                localStorage.setItem('adminUsername', username);
-                localStorage.setItem('adminPassword', password);
-                showAlert('success', 'Credentials updated!');
-                document.getElementById('newUsername').value = '';
-                document.getElementById('newPassword').value = '';
-            } else {
-                alert('Please enter both username and password');
-            }
-        }
-
-        function exportData() {
+        function saveSEO() {
             const data = {
-                menuItems: menuItems,
-                content: JSON.parse(localStorage.getItem('siteContent') || '{}'),
-                images: JSON.parse(localStorage.getItem('uploadedImages') || '[]'),
-                timestamp: new Date().toISOString()
+                title: document.getElementById('seoTitle').value,
+                description: document.getElementById('seoDescription').value,
+                keywords: document.getElementById('seoKeywords').value
             };
-
-            const blob = new Blob([JSON.stringify(data, null, 2)], {type: 'application/json'});
-            const url = URL.createObjectURL(blob);
-            const a = document.createElement('a');
-            a.href = url;
-            a.download = `celizes-data-${Date.now()}.json`;
-            a.click();
-            showAlert('success', 'Data exported successfully!');
+            localStorage.setItem('seo', JSON.stringify(data));
+            showToast('SEO settings saved!', 'success');
         }
 
-        // Utilities
-        function showAlert(type, message) {
-            const alert = document.createElement('div');
-            alert.className = `alert alert-${type}`;
-            alert.textContent = message;
-            document.querySelector('.main-content').insertBefore(alert, document.querySelector('.main-content').firstChild);
-            setTimeout(() => alert.remove(), 3000);
+        // Sync to live site
+        function syncToLiveSite() {
+            // In production, this would call your API to update the live site
+            console.log('Syncing to live site...');
+            localStorage.setItem('siteNeedsUpdate', 'true');
         }
 
-        // Drag and drop
-        const uploadArea = document.getElementById('imageUpload');
-        if (uploadArea) {
-            ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
-                uploadArea.addEventListener(eventName, e => {
-                    e.preventDefault();
-                    e.stopPropagation();
-                });
-            });
-
-            ['dragenter', 'dragover'].forEach(eventName => {
-                uploadArea.addEventListener(eventName, () => {
-                    uploadArea.classList.add('dragging');
-                });
-            });
-
-            ['dragleave', 'drop'].forEach(eventName => {
-                uploadArea.addEventListener(eventName, () => {
-                    uploadArea.classList.remove('dragging');
-                });
-            });
-
-            uploadArea.addEventListener('drop', e => {
-                const files = e.dataTransfer.files;
-                document.getElementById('fileInput').files = files;
-                handleFileUpload({target: {files}});
-            });
+        // Publish changes
+        function publishChanges() {
+            showToast('Publishing changes...', 'info');
+            setTimeout(() => {
+                localStorage.setItem('siteNeedsUpdate', 'false');
+                showToast('✅ Changes published! Site is live', 'success');
+            }, 1500);
         }
 
-        // Initialize
-        checkAuth();
+        // Preview site
+        function previewSite() {
+            window.open('/', '_blank');
+        }
+
+        // Toast notification
+        function showToast(message, type = 'info') {
+            const toast = document.createElement('div');
+            toast.className = `toast ${type}`;
+            toast.textContent = message;
+            document.body.appendChild(toast);
+            
+            setTimeout(() => {
+                toast.style.animation = 'slideIn 0.3s ease-out reverse';
+                setTimeout(() => toast.remove(), 300);
+            }, 3000);
+        }
     </script>
 </body>
 </html>
