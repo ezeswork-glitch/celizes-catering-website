@@ -843,10 +843,44 @@
         
         // Data Management
         function loadData() {
+            // Try to load from localStorage first
             const saved = localStorage.getItem('menuItems');
             if (saved) {
-                menuItems = JSON.parse(saved);
+                try {
+                    menuItems = JSON.parse(saved);
+                    console.log('Loaded menu items from localStorage:', menuItems.length);
+                } catch (e) {
+                    console.error('Error loading menu items:', e);
+                }
             }
+            
+            // If no saved data or less than 18 items, reset to default
+            if (!menuItems || menuItems.length < 18) {
+                console.log('Resetting to default 18 menu items');
+                menuItems = [
+                    {id: 1, name: "Waakye with Fish and Egg", category: "Main Dishes", price: "$25.00", description: "Traditional Ghanaian rice and beans served with fried fish and boiled egg", image: ""},
+                    {id: 2, name: "Jollof with Chicken", category: "Main Dishes", price: "$25.00", description: "Flavorful West African rice dish with tender grilled chicken", image: ""},
+                    {id: 3, name: "Fried Rice with Chicken", category: "Main Dishes", price: "$25.00", description: "Savory fried rice with mixed vegetables and grilled chicken", image: ""},
+                    {id: 4, name: "Ga Kenkey with Tilapia", category: "Main Dishes", price: "$25.00", description: "Fermented corn dough served with grilled tilapia and pepper sauce", image: ""},
+                    {id: 5, name: "Ga/Fante Kenkey (5 pieces)", category: "Main Dishes", price: "$25.00", description: "Traditional fermented corn dough wrapped in banana leaves", image: ""},
+                    {id: 6, name: "Light Soup", category: "Soups & Stews", price: "2L: $150 | 4L: $200", description: "Traditional Ghanaian tomato-based soup with meat and spices", image: ""},
+                    {id: 7, name: "Groundnut Soup", category: "Soups & Stews", price: "2L: $150 | 4L: $200", description: "Rich peanut butter soup with meat and vegetables", image: ""},
+                    {id: 8, name: "Okro Soup", category: "Soups & Stews", price: "2L: $200 | 4L: $250", description: "Authentic okra soup with fish and seafood", image: ""},
+                    {id: 9, name: "Palmnut Soup", category: "Soups & Stews", price: "2L: $200 | 4L: $250", description: "Traditional palm fruit soup with meat and fish", image: ""},
+                    {id: 10, name: "Egusi Soup", category: "Soups & Stews", price: "2L: $150 | 4L: $200", description: "Nigerian melon seed soup with meat and fish", image: ""},
+                    {id: 11, name: "Tomato Stew", category: "Soups & Stews", price: "2L: $120 | 4L: $170", description: "Rich tomato-based stew perfect for rice or yam", image: ""},
+                    {id: 12, name: "Egg Stew", category: "Soups & Stews", price: "2L: $150 | 4L: $200", description: "Tomato stew with boiled eggs", image: ""},
+                    {id: 13, name: "Meat Pie (5 pieces)", category: "Baked Goods & Cakes", price: "$22.00", description: "Savory pastry filled with seasoned ground meat", image: ""},
+                    {id: 14, name: "Puff-Puff (5 pieces)", category: "Baked Goods & Cakes", price: "$10.00", description: "Sweet fried dough balls, popular West African snack", image: ""},
+                    {id: 15, name: "Spring Roll (2 pieces)", category: "Snacks & Drinks", price: "$4.00", description: "Crispy vegetable-filled spring rolls", image: ""},
+                    {id: 16, name: "Shito", category: "Snacks & Drinks", price: "500ml: $25 | 250ml: $15", description: "Spicy Ghanaian black pepper sauce", image: ""},
+                    {id: 17, name: "Water (500ml)", category: "Snacks & Drinks", price: "$2.50", description: "Bottled water", image: ""},
+                    {id: 18, name: "Sobolo (350ml)", category: "Snacks & Drinks", price: "$4.50", description: "Refreshing hibiscus drink with ginger and spices", image: ""}
+                ];
+                // Save the default items
+                localStorage.setItem('menuItems', JSON.stringify(menuItems));
+            }
+            
             displayMenuItems();
             updateStats();
         }
@@ -854,6 +888,8 @@
         function displayMenuItems() {
             const container = document.getElementById('menuItemsList');
             container.innerHTML = '';
+            
+            console.log('Displaying menu items:', menuItems.length);
             
             menuItems.forEach(item => {
                 const card = document.createElement('div');
@@ -1006,8 +1042,17 @@
         
         // Publish to Live Site
         async function publishChanges() {
-            showToast('info', '⏳ Publishing changes...');
+            // Save to localStorage for now
+            localStorage.setItem('menuItems', JSON.stringify(menuItems));
+            localStorage.setItem('publishedData', JSON.stringify({
+                menuItems: menuItems,
+                homepageContent: JSON.parse(localStorage.getItem('homepageContent') || '{}'),
+                timestamp: new Date().toISOString()
+            }));
             
+            showToast('success', '✅ Changes saved! (Deploy CMS API to enable live sync)');
+            
+            // Try to sync if API is available
             try {
                 const response = await fetch('/api/update-website', {
                     method: 'POST',
@@ -1017,18 +1062,17 @@
                     },
                     body: JSON.stringify({
                         menuItems: menuItems,
+                        homepageContent: JSON.parse(localStorage.getItem('homepageContent') || '{}'),
                         timestamp: new Date().toISOString()
                     })
                 });
                 
                 if (response.ok) {
-                    showToast('success', '✅ Published! Your website is now live');
-                } else {
-                    showToast('error', '❌ Sync failed. Check API setup.');
+                    showToast('success', '✅ Synced to live website!');
                 }
             } catch (error) {
-                console.error('Publish error:', error);
-                showToast('error', '❌ Sync failed. API not configured yet.');
+                // Silent fail - API not deployed yet
+                console.log('API not available:', error);
             }
         }
         
