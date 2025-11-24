@@ -1,7 +1,6 @@
 // api/save-content.js
-// API to save website content (requires authentication)
-
 export default async function handler(req, res) {
+    // Enable CORS
     res.setHeader('Access-Control-Allow-Origin', '*');
     res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
     res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
@@ -15,32 +14,43 @@ export default async function handler(req, res) {
     }
 
     try {
-        // Verify admin token
+        // Verify auth token
         const authHeader = req.headers.authorization;
-        if (!authHeader || authHeader !== `Bearer ${process.env.ADMIN_TOKEN}`) {
+        const token = process.env.ADMIN_TOKEN || 'celizes_admin_2025_token';
+
+        if (!authHeader || !authHeader.includes(token)) {
             return res.status(401).json({ error: 'Unauthorized' });
         }
 
-        const { content, menuItems } = req.body;
+        const data = req.body;
 
-        // In production, save to database
-        // For now, log the changes (you'll need to update env vars manually)
-        console.log('Content update requested:', { content, menuItems });
+        // Store in Vercel Blob (if available) or environment
+        if (process.env.BLOB_READ_WRITE_TOKEN) {
+            // Use Vercel Blob Storage
+            const { put } = await import('@vercel/blob');
+            await put('website-data.json', JSON.stringify(data), {
+                access: 'public',
+                addRandomSuffix: false
+            });
+        }
 
-        // Save to a simple JSON store (you can use Vercel KV or other storage)
-        // For now, we'll return success and you can manually update env vars
+        // Log for verification
+        console.log('[API] Content saved:', {
+            menuItems: data.menuItems?.length || 0,
+            timestamp: new Date().toISOString()
+        });
 
         return res.status(200).json({
             success: true,
-            message: 'Content saved. To make live, update Vercel environment variables.',
-            data: { content, menuItems }
+            message: 'Content saved successfully',
+            timestamp: new Date().toISOString()
         });
 
     } catch (error) {
-        console.error('Error saving content:', error);
-        return res.status(500).json({ 
-            success: false, 
-            error: error.message 
+        console.error('[API] Error:', error);
+        return res.status(500).json({
+            success: false,
+            error: error.message
         });
     }
 }

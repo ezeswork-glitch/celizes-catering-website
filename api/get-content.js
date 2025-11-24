@@ -1,6 +1,4 @@
 // api/get-content.js
-// API to fetch website content and menu
-
 export default async function handler(req, res) {
     res.setHeader('Access-Control-Allow-Origin', '*');
     res.setHeader('Access-Control-Allow-Methods', 'GET, OPTIONS');
@@ -15,38 +13,48 @@ export default async function handler(req, res) {
     }
 
     try {
-        // In production, this would fetch from a database
-        // For now, we'll use Vercel Edge Config or KV
+        let data = null;
 
-        // Default content structure
-        const content = {
-            businessName: process.env.BUSINESS_NAME || 'Celizes Catering',
-            tagline: process.env.TAGLINE || 'Taste of Africa',
-            heroTitle: process.env.HERO_TITLE || 'Celizes Catering',
-            heroSubtitle: process.env.HERO_SUBTITLE || 'Taste of Africa',
-            heroDescription: process.env.HERO_DESCRIPTION || 'Bringing authentic African cuisine to Thunder Bay, Ontario.',
-            missionStatement: process.env.MISSION_STATEMENT || 'Bring the authentic taste of African cuisine to the world.',
-            phone1: process.env.PHONE_1 || '+1 (249) 885-1296',
-            phone2: process.env.PHONE_2 || '+1 (807) 357-9272',
-            businessEmail: process.env.BUSINESS_EMAIL || 'celizescatering@gmail.com',
-            location: process.env.LOCATION || 'Thunder Bay, Ontario',
-            heroImage: process.env.HERO_IMAGE || '',
-            logoUrl: process.env.LOGO_URL || ''
-        };
+        // Try to load from Vercel Blob
+        if (process.env.BLOB_READ_WRITE_TOKEN) {
+            try {
+                const { head } = await import('@vercel/blob');
+                const blob = await head('website-data.json');
+                if (blob) {
+                    const response = await fetch(blob.url);
+                    data = await response.json();
+                }
+            } catch (e) {
+                console.log('[API] No blob data found, using defaults');
+            }
+        }
 
-        const menuItems = JSON.parse(process.env.MENU_ITEMS || '[]');
+        // Return default data if no stored data exists
+        if (!data) {
+            data = {
+                menuItems: [],
+                homepageContent: {
+                    businessName: 'Celizes Catering',
+                    tagline: 'Taste of Africa',
+                    heroHeadline: 'Celizes Catering',
+                    heroDescription: 'Bringing authentic African cuisine to Thunder Bay, Ontario',
+                    phone1: '+1 (249) 885-1296',
+                    phone2: '+1 (807) 357-9272',
+                    contactEmail: 'celizescatering@gmail.com'
+                }
+            };
+        }
 
         return res.status(200).json({
             success: true,
-            content,
-            menuItems
+            data
         });
 
     } catch (error) {
-        console.error('Error fetching content:', error);
-        return res.status(500).json({ 
-            success: false, 
-            error: error.message 
+        console.error('[API] Error:', error);
+        return res.status(500).json({
+            success: false,
+            error: error.message
         });
     }
 }
