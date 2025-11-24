@@ -1081,11 +1081,53 @@
             }
         }
 
-        function handleQuoteSubmit(e) {
-            e.preventDefault();
-            alert('Thank you! We will review your request and contact you within 24 hours with a custom quote.');
+async function handleQuoteSubmit(e) {
+    e.preventDefault();
+
+    const submitButton = e.target.querySelector('button[type="submit"]');
+    const originalText = submitButton.textContent;
+    submitButton.disabled = true;
+    submitButton.textContent = 'Sending...';
+
+    try {
+        // Get form data
+        const formData = {
+            name: e.target.querySelector('input[type="text"]').value,
+            email: e.target.querySelector('input[type="email"]').value,
+            phone: e.target.querySelector('input[type="tel"]').value,
+            eventType: e.target.querySelector('select').value,
+            guests: e.target.querySelector('input[type="number"]').value,
+            eventDate: e.target.querySelector('input[type="date"]').value,
+            details: e.target.querySelector('textarea').value
+        };
+
+        // Send to email API
+        const response = await fetch('/api/send-quote', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(formData)
+        });
+
+        const result = await response.json();
+
+        if (result.success) {
+            alert('✅ Thank you! We received your quote request and will contact you within 24 hours.');
             e.target.reset();
+        } else {
+            alert('❌ There was an issue sending your request. Please call us directly at +1 (249) 885-1296 or +1 (807) 357-9272');
+            console.error('Email error:', result.error);
         }
+    } catch (error) {
+        console.error('Error submitting quote:', error);
+        alert('❌ There was an issue sending your request. Please call us directly at +1 (249) 885-1296 or +1 (807) 357-9272');
+    } finally {
+        submitButton.disabled = false;
+        submitButton.textContent = originalText;
+    }
+}
+
 
         // Smooth scrolling
         document.querySelectorAll('a[href^="#"]').forEach(anchor => {
