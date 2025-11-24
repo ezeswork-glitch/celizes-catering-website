@@ -1,0 +1,196 @@
+{
+  "mainDishes": [
+    {
+      "id": 1,
+      "name": "Waakye with Fish and Egg",
+      "price": 25.00,
+      "category": "Main Dishes",
+      "description": "Traditional Ghanaian rice and beans served with fried fish and boiled egg",
+      "image": "",
+      "available": true
+    },
+    {
+      "id": 2,
+      "name": "Jollof with Chicken",
+      "price": 25.00,
+      "category": "Main Dishes",
+      "description": "Flavorful West African rice dish with tender chicken",
+      "image": "",
+      "available": true
+    },
+    {
+      "id": 3,
+      "name": "Fried Rice with Chicken",
+      "price": 25.00,
+      "category": "Main Dishes",
+      "description": "Savory fried rice with vegetables and grilled chicken",
+      "image": "",
+      "available": true
+    },
+    {
+      "id": 4,
+      "name": "Ga Kenkey with Tilapia",
+      "price": 25.00,
+      "category": "Main Dishes",
+      "description": "Fermented corn dough served with grilled tilapia and pepper sauce",
+      "image": "",
+      "available": true
+    },
+    {
+      "id": 5,
+      "name": "Ga/Fante Kenkey (5 pieces)",
+      "price": 25.00,
+      "category": "Main Dishes",
+      "description": "Traditional fermented corn dough wrapped in banana leaves",
+      "image": "",
+      "available": true
+    }
+  ],
+  "soupsStews": [
+    {
+      "id": 6,
+      "name": "Light Soup",
+      "sizes": [
+        {"size": "2L", "price": 150.00},
+        {"size": "4L", "price": 200.00}
+      ],
+      "category": "Soups & Stews",
+      "description": "Traditional Ghanaian tomato-based soup with meat",
+      "image": "",
+      "available": true
+    },
+    {
+      "id": 7,
+      "name": "Groundnut Soup",
+      "sizes": [
+        {"size": "2L", "price": 150.00},
+        {"size": "4L", "price": 200.00}
+      ],
+      "category": "Soups & Stews",
+      "description": "Rich peanut butter soup with meat and vegetables",
+      "image": "",
+      "available": true
+    },
+    {
+      "id": 8,
+      "name": "Okro Soup",
+      "sizes": [
+        {"size": "2L", "price": 200.00},
+        {"size": "4L", "price": 250.00}
+      ],
+      "category": "Soups & Stews",
+      "description": "Authentic okra soup with fish and seafood",
+      "image": "",
+      "available": true
+    },
+    {
+      "id": 9,
+      "name": "Palmnut Soup",
+      "sizes": [
+        {"size": "2L", "price": 200.00},
+        {"size": "4L", "price": 250.00}
+      ],
+      "category": "Soups & Stews",
+      "description": "Traditional palm fruit soup with meat",
+      "image": "",
+      "available": true
+    },
+    {
+      "id": 10,
+      "name": "Egusi Soup",
+      "sizes": [
+        {"size": "2L", "price": 150.00},
+        {"size": "4L", "price": 200.00}
+      ],
+      "category": "Soups & Stews",
+      "description": "Nigerian melon seed soup with meat and fish",
+      "image": "",
+      "available": true
+    },
+    {
+      "id": 11,
+      "name": "Tomatoe Stew",
+      "sizes": [
+        {"size": "2L", "price": 120.00},
+        {"size": "4L", "price": 170.00}
+      ],
+      "category": "Soups & Stews",
+      "description": "Rich tomato-based stew perfect for rice or yam",
+      "image": "",
+      "available": true
+    },
+    {
+      "id": 12,
+      "name": "Egg Stew",
+      "sizes": [
+        {"size": "2L", "price": 150.00},
+        {"size": "4L", "price": 200.00}
+      ],
+      "category": "Soups & Stews",
+      "description": "Tomato stew with boiled eggs",
+      "image": "",
+      "available": true
+    }
+  ],
+  "bakedGoods": [
+    {
+      "id": 13,
+      "name": "Meat Pie (5 pieces)",
+      "price": 22.00,
+      "category": "Baked Goods & Cakes",
+      "description": "Savory pastry filled with seasoned ground meat",
+      "image": "",
+      "available": true
+    },
+    {
+      "id": 14,
+      "name": "Puff-Puff (5 pieces)",
+      "price": 10.00,
+      "category": "Baked Goods & Cakes",
+      "description": "Sweet fried dough balls, a popular West African snack",
+      "image": "",
+      "available": true
+    }
+  ],
+  "snacksDrinks": [
+    {
+      "id": 15,
+      "name": "Spring Roll (2 pieces)",
+      "price": 4.00,
+      "category": "Snacks & Drinks",
+      "description": "Crispy vegetable-filled spring rolls",
+      "image": "",
+      "available": true
+    },
+    {
+      "id": 16,
+      "name": "Shito",
+      "sizes": [
+        {"size": "500ml", "price": 25.00},
+        {"size": "250ml", "price": 15.00}
+      ],
+      "category": "Snacks & Drinks",
+      "description": "Spicy Ghanaian black pepper sauce",
+      "image": "",
+      "available": true
+    },
+    {
+      "id": 17,
+      "name": "Water (500ml)",
+      "price": 2.50,
+      "category": "Snacks & Drinks",
+      "description": "Bottled water",
+      "image": "",
+      "available": true
+    },
+    {
+      "id": 18,
+      "name": "Sobolo (350ml)",
+      "price": 4.50,
+      "category": "Snacks & Drinks",
+      "description": "Refreshing hibiscus drink with ginger and spices",
+      "image": "",
+      "available": true
+    }
+  ]
+}
