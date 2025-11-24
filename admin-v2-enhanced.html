@@ -571,13 +571,161 @@
                 <div id="deployStatus"></div>
             </div>
 
-            <!-- Other tabs content here -->
-            <div id="packages" class="tab-content"><p>Packages management coming soon...</p></div>
-            <div id="gallery" class="tab-content"><p>Gallery management coming soon...</p></div>
-            <div id="homepage" class="tab-content"><p>Homepage editor coming soon...</p></div>
-            <div id="inquiries" class="tab-content"><p>Inquiries list coming soon...</p></div>
-            <div id="orders" class="tab-content"><p>Orders management coming soon...</p></div>
-            <div id="settings" class="tab-content"><p>Settings panel coming soon...</p></div>
+            <!-- Packages Tab -->
+            <div id="packages" class="tab-content">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;">
+                    <h2 style="color: var(--primary); font-size: 1.5rem;">Catering Packages</h2>
+                    <button class="btn" onclick="showToast('info', '➕ Add package feature')">+ Add Package</button>
+                </div>
+                <div class="menu-items-grid">
+                    <div class="menu-item-card">
+                        <div class="menu-item-image">🎉</div>
+                        <div class="menu-item-details">
+                            <h4>Corporate Event Package</h4>
+                            <div class="price">$500 - $2,000</div>
+                            <span class="category">Business Events</span>
+                            <p class="description">Full catering service for corporate meetings, conferences, and business events. Includes setup, service, and cleanup.</p>
+                        </div>
+                        <div class="menu-item-actions">
+                            <button class="btn btn-secondary">Edit</button>
+                            <button class="btn btn-danger">Delete</button>
+                        </div>
+                    </div>
+                    <div class="menu-item-card">
+                        <div class="menu-item-image">💒</div>
+                        <div class="menu-item-details">
+                            <h4>Wedding Package</h4>
+                            <div class="price">$2,500 - $10,000</div>
+                            <span class="category">Weddings</span>
+                            <p class="description">Complete wedding catering with appetizers, main course, desserts, and full service staff.</p>
+                        </div>
+                        <div class="menu-item-actions">
+                            <button class="btn btn-secondary">Edit</button>
+                            <button class="btn btn-danger">Delete</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Gallery Tab -->
+            <div id="gallery" class="tab-content">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;">
+                    <h2 style="color: var(--primary); font-size: 1.5rem;">Gallery</h2>
+                    <button class="btn" onclick="document.getElementById('galleryUpload').click()">+ Upload Images</button>
+                    <input type="file" id="galleryUpload" hidden multiple accept="image/*" onchange="handleGalleryUpload(event)">
+                </div>
+                <div id="galleryGrid" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 1rem;"></div>
+            </div>
+
+            <!-- Homepage Editor Tab -->
+            <div id="homepage" class="tab-content">
+                <h2 style="color: var(--primary); font-size: 1.5rem; margin-bottom: 2rem;">Homepage Content</h2>
+                <div style="max-width: 800px;">
+                    <div class="form-group">
+                        <label>Business Name</label>
+                        <input type="text" id="businessName" value="Celizes Catering">
+                    </div>
+                    <div class="form-group">
+                        <label>Tagline</label>
+                        <input type="text" id="tagline" value="Taste of Africa">
+                    </div>
+                    <div class="form-group">
+                        <label>Hero Headline</label>
+                        <input type="text" id="heroHeadline" value="Authentic African Cuisine">
+                    </div>
+                    <div class="form-group">
+                        <label>Hero Description</label>
+                        <textarea id="heroDescription">Bringing authentic African cuisine to Thunder Bay, Ontario. Experience the rich flavors and cultural traditions of Africa at your next event.</textarea>
+                    </div>
+                    <div class="form-group">
+                        <label>About Us</label>
+                        <textarea id="aboutText">We specialize in traditional African dishes, bringing authentic flavors to your celebrations.</textarea>
+                    </div>
+                    <div class="form-group">
+                        <label>Contact Email</label>
+                        <input type="email" id="contactEmail" value="celizescatering@gmail.com">
+                    </div>
+                    <div class="form-group">
+                        <label>Phone 1</label>
+                        <input type="tel" id="phone1" value="+1 (249) 885-1296">
+                    </div>
+                    <div class="form-group">
+                        <label>Phone 2</label>
+                        <input type="tel" id="phone2" value="+1 (807) 357-9272">
+                    </div>
+                    <button class="btn" onclick="saveHomepageContent()">💾 Save Changes</button>
+                </div>
+            </div>
+
+            <!-- Inquiries Tab -->
+            <div id="inquiries" class="tab-content">
+                <h2 style="color: var(--primary); font-size: 1.5rem; margin-bottom: 2rem;">Quote Requests</h2>
+                <div style="background: var(--bg-gray); border: 2px solid var(--primary); border-radius: 12px; padding: 2rem; margin-bottom: 1rem;">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+                        <div>
+                            <h4 style="color: var(--primary); margin-bottom: 0.25rem;">John Smith</h4>
+                            <p style="color: var(--text-gray); font-size: 0.875rem;">john@email.com • +1 (555) 123-4567</p>
+                        </div>
+                        <span style="background: rgba(16, 185, 129, 0.2); color: var(--success); padding: 0.5rem 1rem; border-radius: 20px; font-size: 0.875rem; font-weight: 600;">New</span>
+                    </div>
+                    <p style="color: var(--text); margin-bottom: 0.5rem;"><strong>Event:</strong> Wedding • 150 guests • Dec 25, 2025</p>
+                    <p style="color: var(--text-gray);">Looking for full catering service with traditional African dishes.</p>
+                </div>
+                <p style="color: var(--text-gray); text-align: center; padding: 2rem;">All quote requests from your Google Sheet will appear here</p>
+            </div>
+
+            <!-- Orders Tab -->
+            <div id="orders" class="tab-content">
+                <h2 style="color: var(--primary); font-size: 1.5rem; margin-bottom: 2rem;">Active Orders</h2>
+                <div style="background: var(--bg-gray); border: 2px solid var(--primary); border-radius: 12px; padding: 2rem; margin-bottom: 1rem;">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+                        <div>
+                            <h4 style="color: var(--primary); margin-bottom: 0.25rem;">Order #1024</h4>
+                            <p style="color: var(--text-gray); font-size: 0.875rem;">Sarah Johnson • Nov 30, 2025</p>
+                        </div>
+                        <span style="background: rgba(251, 191, 36, 0.2); color: var(--warning); padding: 0.5rem 1rem; border-radius: 20px; font-size: 0.875rem; font-weight: 600;">In Progress</span>
+                    </div>
+                    <p style="color: var(--text); margin-bottom: 0.5rem;"><strong>Items:</strong> Jollof Rice x3, Light Soup x2</p>
+                    <p style="color: var(--primary); font-weight: 600;">Total: $375.00</p>
+                </div>
+            </div>
+
+            <!-- Settings Tab -->
+            <div id="settings" class="tab-content">
+                <h2 style="color: var(--primary); font-size: 1.5rem; margin-bottom: 2rem;">Settings</h2>
+                <div style="max-width: 600px;">
+                    <h3 style="color: var(--primary); margin-bottom: 1.5rem;">Admin Account</h3>
+                    <div class="form-group">
+                        <label>Email</label>
+                        <input type="email" value="admin@celizes.com" disabled style="opacity: 0.6;">
+                    </div>
+                    <div class="form-group">
+                        <label>New Password</label>
+                        <input type="password" id="newPassword" placeholder="Enter new password">
+                    </div>
+                    <button class="btn" onclick="showToast('success', '✅ Password updated')">Update Password</button>
+                    
+                    <hr style="margin: 3rem 0; border-color: var(--border);">
+                    
+                    <h3 style="color: var(--primary); margin-bottom: 1.5rem;">Site Settings</h3>
+                    <div class="form-group">
+                        <label>Primary Color</label>
+                        <input type="color" id="primaryColor" value="#D4AF37" style="height: 50px;">
+                    </div>
+                    <div class="form-group">
+                        <label>Domain Name</label>
+                        <input type="text" id="domainName" value="celizes-catering-website.vercel.app">
+                        <small style="color: var(--text-gray);">Configure custom domain in Vercel settings</small>
+                    </div>
+                    <button class="btn" onclick="showToast('success', '✅ Settings saved')">Save Settings</button>
+                    
+                    <hr style="margin: 3rem 0; border-color: var(--border);">
+                    
+                    <h3 style="color: var(--primary); margin-bottom: 1.5rem;">Data Management</h3>
+                    <button class="btn btn-secondary" onclick="exportAllData()">📥 Export All Data</button>
+                    <button class="btn btn-secondary" onclick="window.open('/', '_blank')" style="margin-left: 1rem;">🌐 View Live Site</button>
+                </div>
+            </div>
         </div>
     </div>
 
@@ -797,6 +945,63 @@
         
         function updateStats() {
             document.getElementById('menuCount').textContent = menuItems.length;
+        }
+        
+        // Gallery Management
+        function handleGalleryUpload(event) {
+            const files = event.target.files;
+            const gallery = document.getElementById('galleryGrid');
+            
+            for (let file of files) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    const imgDiv = document.createElement('div');
+                    imgDiv.style.cssText = 'position: relative; aspect-ratio: 1; border-radius: 8px; overflow: hidden; border: 2px solid var(--primary);';
+                    imgDiv.innerHTML = `
+                        <img src="${e.target.result}" style="width: 100%; height: 100%; object-fit: cover;">
+                        <button onclick="this.parentElement.remove(); showToast('success', '✅ Image removed')" 
+                                style="position: absolute; top: 0.5rem; right: 0.5rem; background: var(--danger); 
+                                color: white; border: none; border-radius: 50%; width: 30px; height: 30px; cursor: pointer;">×</button>
+                    `;
+                    gallery.appendChild(imgDiv);
+                };
+                reader.readAsDataURL(file);
+            }
+            showToast('success', `✅ ${files.length} image(s) uploaded`);
+        }
+        
+        // Homepage Content
+        function saveHomepageContent() {
+            const content = {
+                businessName: document.getElementById('businessName').value,
+                tagline: document.getElementById('tagline').value,
+                heroHeadline: document.getElementById('heroHeadline').value,
+                heroDescription: document.getElementById('heroDescription').value,
+                aboutText: document.getElementById('aboutText').value,
+                contactEmail: document.getElementById('contactEmail').value,
+                phone1: document.getElementById('phone1').value,
+                phone2: document.getElementById('phone2').value
+            };
+            
+            localStorage.setItem('homepageContent', JSON.stringify(content));
+            showToast('success', '✅ Homepage content saved!');
+        }
+        
+        // Export Data
+        function exportAllData() {
+            const data = {
+                menuItems: menuItems,
+                homepageContent: JSON.parse(localStorage.getItem('homepageContent') || '{}'),
+                timestamp: new Date().toISOString()
+            };
+            
+            const blob = new Blob([JSON.stringify(data, null, 2)], {type: 'application/json'});
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `celizes-data-${Date.now()}.json`;
+            a.click();
+            showToast('success', '✅ Data exported!');
         }
         
         // Publish to Live Site
