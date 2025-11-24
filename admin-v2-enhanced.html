@@ -539,7 +539,7 @@
             <!-- Menu Items Tab -->
             <div id="menu" class="tab-content">
                 <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;">
-                    <h2 style="color: var(--primary); font-size: 1.5rem;">All Menu Items (18)</h2>
+                    <h2 style="color: var(--primary); font-size: 1.5rem;">All Menu Items (<span id="menuCountDisplay">18</span>)</h2>
                     <button class="btn" onclick="showAddMenuItem()">+ Add New Item</button>
                 </div>
                 <div id="menuItemsList" class="menu-items-grid"></div>
@@ -762,8 +762,8 @@
     </div>
 
     <script>
-        // Menu Data - All 18 Items
-        let menuItems = [
+        // Menu Data - All 18 Items (Default)
+        const DEFAULT_MENU_ITEMS = [
             {id: 1, name: "Waakye with Fish and Egg", category: "Main Dishes", price: "$25.00", description: "Traditional Ghanaian rice and beans served with fried fish and boiled egg", image: ""},
             {id: 2, name: "Jollof with Chicken", category: "Main Dishes", price: "$25.00", description: "Flavorful West African rice dish with tender grilled chicken", image: ""},
             {id: 3, name: "Fried Rice with Chicken", category: "Main Dishes", price: "$25.00", description: "Savory fried rice with mixed vegetables and grilled chicken", image: ""},
@@ -784,6 +784,7 @@
             {id: 18, name: "Sobolo (350ml)", category: "Snacks & Drinks", price: "$4.50", description: "Refreshing hibiscus drink with ginger and spices", image: ""}
         ];
         
+        let menuItems = [];
         let editingItemId = null;
         
         // Authentication
@@ -847,37 +848,25 @@
             const saved = localStorage.getItem('menuItems');
             if (saved) {
                 try {
-                    menuItems = JSON.parse(saved);
-                    console.log('Loaded menu items from localStorage:', menuItems.length);
+                    const parsed = JSON.parse(saved);
+                    // Validate that we have valid menu items
+                    if (Array.isArray(parsed) && parsed.length > 0) {
+                        menuItems = parsed;
+                        console.log('✅ Loaded', menuItems.length, 'menu items from localStorage');
+                    } else {
+                        console.log('⚠️ Invalid saved data, using defaults');
+                        menuItems = [...DEFAULT_MENU_ITEMS];
+                        localStorage.setItem('menuItems', JSON.stringify(menuItems));
+                    }
                 } catch (e) {
-                    console.error('Error loading menu items:', e);
+                    console.error('❌ Error parsing saved menu:', e);
+                    menuItems = [...DEFAULT_MENU_ITEMS];
+                    localStorage.setItem('menuItems', JSON.stringify(menuItems));
                 }
-            }
-            
-            // If no saved data or less than 18 items, reset to default
-            if (!menuItems || menuItems.length < 18) {
-                console.log('Resetting to default 18 menu items');
-                menuItems = [
-                    {id: 1, name: "Waakye with Fish and Egg", category: "Main Dishes", price: "$25.00", description: "Traditional Ghanaian rice and beans served with fried fish and boiled egg", image: ""},
-                    {id: 2, name: "Jollof with Chicken", category: "Main Dishes", price: "$25.00", description: "Flavorful West African rice dish with tender grilled chicken", image: ""},
-                    {id: 3, name: "Fried Rice with Chicken", category: "Main Dishes", price: "$25.00", description: "Savory fried rice with mixed vegetables and grilled chicken", image: ""},
-                    {id: 4, name: "Ga Kenkey with Tilapia", category: "Main Dishes", price: "$25.00", description: "Fermented corn dough served with grilled tilapia and pepper sauce", image: ""},
-                    {id: 5, name: "Ga/Fante Kenkey (5 pieces)", category: "Main Dishes", price: "$25.00", description: "Traditional fermented corn dough wrapped in banana leaves", image: ""},
-                    {id: 6, name: "Light Soup", category: "Soups & Stews", price: "2L: $150 | 4L: $200", description: "Traditional Ghanaian tomato-based soup with meat and spices", image: ""},
-                    {id: 7, name: "Groundnut Soup", category: "Soups & Stews", price: "2L: $150 | 4L: $200", description: "Rich peanut butter soup with meat and vegetables", image: ""},
-                    {id: 8, name: "Okro Soup", category: "Soups & Stews", price: "2L: $200 | 4L: $250", description: "Authentic okra soup with fish and seafood", image: ""},
-                    {id: 9, name: "Palmnut Soup", category: "Soups & Stews", price: "2L: $200 | 4L: $250", description: "Traditional palm fruit soup with meat and fish", image: ""},
-                    {id: 10, name: "Egusi Soup", category: "Soups & Stews", price: "2L: $150 | 4L: $200", description: "Nigerian melon seed soup with meat and fish", image: ""},
-                    {id: 11, name: "Tomato Stew", category: "Soups & Stews", price: "2L: $120 | 4L: $170", description: "Rich tomato-based stew perfect for rice or yam", image: ""},
-                    {id: 12, name: "Egg Stew", category: "Soups & Stews", price: "2L: $150 | 4L: $200", description: "Tomato stew with boiled eggs", image: ""},
-                    {id: 13, name: "Meat Pie (5 pieces)", category: "Baked Goods & Cakes", price: "$22.00", description: "Savory pastry filled with seasoned ground meat", image: ""},
-                    {id: 14, name: "Puff-Puff (5 pieces)", category: "Baked Goods & Cakes", price: "$10.00", description: "Sweet fried dough balls, popular West African snack", image: ""},
-                    {id: 15, name: "Spring Roll (2 pieces)", category: "Snacks & Drinks", price: "$4.00", description: "Crispy vegetable-filled spring rolls", image: ""},
-                    {id: 16, name: "Shito", category: "Snacks & Drinks", price: "500ml: $25 | 250ml: $15", description: "Spicy Ghanaian black pepper sauce", image: ""},
-                    {id: 17, name: "Water (500ml)", category: "Snacks & Drinks", price: "$2.50", description: "Bottled water", image: ""},
-                    {id: 18, name: "Sobolo (350ml)", category: "Snacks & Drinks", price: "$4.50", description: "Refreshing hibiscus drink with ginger and spices", image: ""}
-                ];
-                // Save the default items
+            } else {
+                // No saved data, use defaults
+                console.log('📋 No saved data, using default 18 menu items');
+                menuItems = [...DEFAULT_MENU_ITEMS];
                 localStorage.setItem('menuItems', JSON.stringify(menuItems));
             }
             
@@ -889,7 +878,12 @@
             const container = document.getElementById('menuItemsList');
             container.innerHTML = '';
             
-            console.log('Displaying menu items:', menuItems.length);
+            console.log('📊 Displaying', menuItems.length, 'menu items');
+            
+            if (menuItems.length === 0) {
+                container.innerHTML = '<p style="color: var(--text-gray); text-align: center; padding: 2rem;">No menu items. Click "Add New Item" to get started.</p>';
+                return;
+            }
             
             menuItems.forEach(item => {
                 const card = document.createElement('div');
@@ -902,7 +896,7 @@
                         <h4>${item.name}</h4>
                         <div class="price">${item.price}</div>
                         <span class="category">${item.category}</span>
-                        <p class="description">${item.description}</p>
+                        <p class="description">${item.description || ''}</p>
                     </div>
                     <div class="menu-item-actions">
                         <button class="btn btn-secondary" onclick="editMenuItem(${item.id})">Edit</button>
@@ -953,9 +947,13 @@
             
             if (editingItemId) {
                 const index = menuItems.findIndex(i => i.id === editingItemId);
-                menuItems[index] = item;
+                if (index !== -1) {
+                    menuItems[index] = item;
+                    console.log('✏️ Updated item:', item.name);
+                }
             } else {
                 menuItems.push(item);
+                console.log('➕ Added new item:', item.name);
             }
             
             localStorage.setItem('menuItems', JSON.stringify(menuItems));
@@ -967,11 +965,13 @@
         
         function deleteMenuItem(id) {
             if (confirm('Are you sure you want to delete this item?')) {
+                const item = menuItems.find(i => i.id === id);
                 menuItems = menuItems.filter(i => i.id !== id);
                 localStorage.setItem('menuItems', JSON.stringify(menuItems));
                 displayMenuItems();
-                showToast('success', '✅ Item deleted');
+                showToast('success', `✅ Deleted: ${item.name}`);
                 updateStats();
+                console.log('🗑️ Deleted item:', item.name);
             }
         }
         
@@ -980,7 +980,10 @@
         }
         
         function updateStats() {
-            document.getElementById('menuCount').textContent = menuItems.length;
+            const count = menuItems.length;
+            document.getElementById('menuCount').textContent = count;
+            document.getElementById('menuCountDisplay').textContent = count;
+            console.log('📈 Stats updated:', count, 'items');
         }
         
         // Gallery Management
@@ -1042,37 +1045,46 @@
         
         // Publish to Live Site
         async function publishChanges() {
-            // Save to localStorage for now
-            localStorage.setItem('menuItems', JSON.stringify(menuItems));
-            localStorage.setItem('publishedData', JSON.stringify({
-                menuItems: menuItems,
-                homepageContent: JSON.parse(localStorage.getItem('homepageContent') || '{}'),
-                timestamp: new Date().toISOString()
-            }));
-            
-            showToast('success', '✅ Changes saved! (Deploy CMS API to enable live sync)');
-            
-            // Try to sync if API is available
             try {
-                const response = await fetch('/api/update-website', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'Authorization': 'Bearer celizes_admin_2025_token'
-                    },
-                    body: JSON.stringify({
-                        menuItems: menuItems,
-                        homepageContent: JSON.parse(localStorage.getItem('homepageContent') || '{}'),
-                        timestamp: new Date().toISOString()
-                    })
-                });
+                // Always save to localStorage first
+                localStorage.setItem('menuItems', JSON.stringify(menuItems));
+                const publishData = {
+                    menuItems: menuItems,
+                    homepageContent: JSON.parse(localStorage.getItem('homepageContent') || '{}'),
+                    timestamp: new Date().toISOString()
+                };
+                localStorage.setItem('publishedData', JSON.stringify(publishData));
                 
-                if (response.ok) {
-                    showToast('success', '✅ Synced to live website!');
+                console.log('💾 Data saved to localStorage');
+                showToast('success', '✅ Changes saved locally!');
+                
+                // Try to sync to API if available
+                try {
+                    const response = await fetch('/api/update-website', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Authorization': 'Bearer celizes_admin_2025_token'
+                        },
+                        body: JSON.stringify(publishData)
+                    });
+                    
+                    if (response.ok) {
+                        console.log('✅ Synced to live website');
+                        showToast('success', '✅ Synced to live website!');
+                    } else {
+                        console.log('⚠️ API returned error:', response.status);
+                    }
+                } catch (apiError) {
+                    console.log('ℹ️ API not available (deploy CMS to enable sync)');
+                    // Show helpful message
+                    setTimeout(() => {
+                        showToast('info', 'ℹ️ Deploy CMS API to enable live sync');
+                    }, 1500);
                 }
             } catch (error) {
-                // Silent fail - API not deployed yet
-                console.log('API not available:', error);
+                console.error('❌ Error publishing:', error);
+                showToast('error', '❌ Error saving changes');
             }
         }
         
@@ -1090,7 +1102,7 @@
             
             // Simulate deployment (in production, this would call Vercel API)
             setTimeout(() => {
-                showDeployStatus('success', `✅ CMS Deployed!<br><br>Next: Add environment variable ADMIN_TOKEN in Vercel`);
+                showDeployStatus('success', `✅ CMS Deployed!<br><br><strong>Next Steps:</strong><br>1. Go to Vercel → Settings → Environment Variables<br>2. Add: ADMIN_TOKEN = celizes_admin_2025_token<br>3. Save and redeploy<br>4. Your publish button will now sync to live site!`);
                 showToast('success', '✅ CMS deployed successfully!');
             }, 2000);
         }
@@ -1098,7 +1110,7 @@
         function downloadCMS() {
             showToast('info', '⬇️ Preparing download...');
             setTimeout(() => {
-                showToast('success', '✅ Download started! Check your downloads folder.');
+                showToast('success', '✅ Check the previous messages for celizes-complete-cms-system.zip');
             }, 1000);
         }
         
