@@ -1,37 +1,26 @@
 // api/send-quote.js
-// Vercel Serverless Function for Email Notifications
+// Email notification to celizescatering@gmail.com
 
 export default async function handler(req, res) {
-    // Enable CORS
     res.setHeader('Access-Control-Allow-Origin', '*');
     res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
     res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
 
-    // Handle OPTIONS request for CORS
     if (req.method === 'OPTIONS') {
         return res.status(200).end();
     }
 
-    // Only allow POST
     if (req.method !== 'POST') {
-        return res.status(405).json({ 
-            success: false, 
-            error: 'Method not allowed' 
-        });
+        return res.status(405).json({ success: false, error: 'Method not allowed' });
     }
 
     try {
         const { name, email, phone, eventType, guests, eventDate, details } = req.body;
 
-        // Validate required fields
         if (!name || !email || !phone || !eventType || !guests) {
-            return res.status(400).json({ 
-                success: false, 
-                error: 'Missing required fields' 
-            });
+            return res.status(400).json({ success: false, error: 'Missing required fields' });
         }
 
-        // Create email content
         const emailSubject = `New Quote Request from ${name}`;
         const emailBody = `
 NEW QUOTE REQUEST - Celizes Catering
@@ -53,20 +42,15 @@ Additional Details:
 ${details || 'No additional details provided'}
 
 ---
-This quote request was submitted from your website.
-Reply to this customer at: ${email} or call: ${phone}
+Reply to this customer at: ${email}
+Or call them at: ${phone}
         `;
 
-        // Check if Resend API key exists
         if (!process.env.RESEND_API_KEY) {
-            console.error('RESEND_API_KEY not found in environment variables');
-            return res.status(500).json({ 
-                success: false, 
-                error: 'Email service not configured' 
-            });
+            console.error('RESEND_API_KEY not found');
+            return res.status(500).json({ success: false, error: 'Email service not configured' });
         }
 
-        // Send email using Resend API
         const response = await fetch('https://api.resend.com/emails', {
             method: 'POST',
             headers: {
@@ -75,7 +59,7 @@ Reply to this customer at: ${email} or call: ${phone}
             },
             body: JSON.stringify({
                 from: 'Celizes Catering Website <onboarding@resend.dev>',
-                to: ['celizescatering@email.com'],
+                to: ['celizescatering@gmail.com'],
                 subject: emailSubject,
                 text: emailBody,
                 reply_to: email
@@ -85,25 +69,25 @@ Reply to this customer at: ${email} or call: ${phone}
         const result = await response.json();
 
         if (response.ok) {
-            console.log('Email sent successfully:', result);
+            console.log('✅ Email sent successfully to celizescatering@gmail.com');
+            console.log('Quote from:', name, email, phone);
             return res.status(200).json({ 
                 success: true, 
-                message: 'Quote request sent successfully',
-                emailId: result.id
+                message: 'Quote request sent successfully'
             });
         } else {
-            console.error('Resend API error:', result);
+            console.error('❌ Resend API error:', result);
+            // Still log the quote data even if email fails
+            console.log('Quote Request (email failed):', { name, email, phone, eventType, guests, eventDate, details });
             return res.status(500).json({ 
                 success: false, 
-                error: result.message || 'Failed to send email'
+                error: 'Failed to send email',
+                details: result.message || 'Unknown error'
             });
         }
 
     } catch (error) {
-        console.error('Error in send-quote function:', error);
-        return res.status(500).json({ 
-            success: false, 
-            error: 'Internal server error: ' + error.message
-        });
+        console.error('❌ Error in send-quote:', error);
+        return res.status(500).json({ success: false, error: error.message });
     }
 }
